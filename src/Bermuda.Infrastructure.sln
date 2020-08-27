@@ -1,0 +1,104 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29920.165
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-Core", "01-Core", "{9B68AA02-3AA6-4AB8-9AC3-87441447F86D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-Infrastructure", "02-Infrastructure", "{BB865C71-0E1A-465F-936F-DABC632A7420}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Core", "Core\Bermuda.Core\Bermuda.Core.csproj", "{3FB7F9C5-9127-4604-96E6-E6F99890C1A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Database.EF", "Infrastructure\Bermuda.Infrastructure.Database.EF\Bermuda.Infrastructure.Database.EF.csproj", "{0292A729-27DE-4D41-A13B-8EC45C82F756}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Logger.Log4Net", "Infrastructure\Bermuda.Infrastructure.Logger.Log4Net\Bermuda.Infrastructure.Logger.Log4Net.csproj", "{5A4D4F30-2347-4CA5-833C-DD1B67B94CBA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Mapper.AutoMapper", "Infrastructure\Bermuda.Infrastructure.Mapper.AutoMapper\Bermuda.Infrastructure.Mapper.AutoMapper.csproj", "{C526CBCF-9067-4D85-B264-7C8B95B5F0E9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Serialization", "Infrastructure\Bermuda.Infrastructure.Serialization\Bermuda.Infrastructure.Serialization.csproj", "{2F755D0F-DDEF-4426-9608-E1D1B0142BEB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03-Test", "03-Test", "{3E96C358-BAFC-40B1-B47A-89D36F48DBD8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Core.Test", "Test\Bermuda.Core.Test\Bermuda.Core.Test.csproj", "{5AB0DE75-8217-4DE1-89C3-E3444D47134E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Database.Test", "Test\Bermuda.Infrastructure.Database.Test\Bermuda.Infrastructure.Database.Test.csproj", "{723C7AA8-83E1-4064-8C7F-9A91C27E3BCA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Logger.Test", "Test\Bermuda.Infrastructure.Logger.Test\Bermuda.Infrastructure.Logger.Test.csproj", "{56EA538D-BF2A-495F-BBC1-CD4D5BB7AF92}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Serialization.Test", "Test\Bermuda.Infrastructure.Serialization.Test\Bermuda.Infrastructure.Serialization.Test.csproj", "{F8116229-FA50-4F8D-84E5-B9F3A2D733F7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Core.Contract", "Core\Bermuda.Core.Contract\Bermuda.Core.Contract.csproj", "{9C81E600-708B-4C84-8297-2FEDBC411291}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bermuda.Core.WebApi", "Core\Bermuda.Core.WebApi\Bermuda.Core.WebApi.csproj", "{5BF941AE-0996-4674-8D52-5E6555B55127}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3FB7F9C5-9127-4604-96E6-E6F99890C1A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FB7F9C5-9127-4604-96E6-E6F99890C1A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FB7F9C5-9127-4604-96E6-E6F99890C1A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FB7F9C5-9127-4604-96E6-E6F99890C1A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0292A729-27DE-4D41-A13B-8EC45C82F756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0292A729-27DE-4D41-A13B-8EC45C82F756}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0292A729-27DE-4D41-A13B-8EC45C82F756}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0292A729-27DE-4D41-A13B-8EC45C82F756}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A4D4F30-2347-4CA5-833C-DD1B67B94CBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A4D4F30-2347-4CA5-833C-DD1B67B94CBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A4D4F30-2347-4CA5-833C-DD1B67B94CBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A4D4F30-2347-4CA5-833C-DD1B67B94CBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C526CBCF-9067-4D85-B264-7C8B95B5F0E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C526CBCF-9067-4D85-B264-7C8B95B5F0E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C526CBCF-9067-4D85-B264-7C8B95B5F0E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C526CBCF-9067-4D85-B264-7C8B95B5F0E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F755D0F-DDEF-4426-9608-E1D1B0142BEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F755D0F-DDEF-4426-9608-E1D1B0142BEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F755D0F-DDEF-4426-9608-E1D1B0142BEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F755D0F-DDEF-4426-9608-E1D1B0142BEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AB0DE75-8217-4DE1-89C3-E3444D47134E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AB0DE75-8217-4DE1-89C3-E3444D47134E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AB0DE75-8217-4DE1-89C3-E3444D47134E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AB0DE75-8217-4DE1-89C3-E3444D47134E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{723C7AA8-83E1-4064-8C7F-9A91C27E3BCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{723C7AA8-83E1-4064-8C7F-9A91C27E3BCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{723C7AA8-83E1-4064-8C7F-9A91C27E3BCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{723C7AA8-83E1-4064-8C7F-9A91C27E3BCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56EA538D-BF2A-495F-BBC1-CD4D5BB7AF92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56EA538D-BF2A-495F-BBC1-CD4D5BB7AF92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56EA538D-BF2A-495F-BBC1-CD4D5BB7AF92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56EA538D-BF2A-495F-BBC1-CD4D5BB7AF92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8116229-FA50-4F8D-84E5-B9F3A2D733F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8116229-FA50-4F8D-84E5-B9F3A2D733F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8116229-FA50-4F8D-84E5-B9F3A2D733F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8116229-FA50-4F8D-84E5-B9F3A2D733F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C81E600-708B-4C84-8297-2FEDBC411291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C81E600-708B-4C84-8297-2FEDBC411291}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C81E600-708B-4C84-8297-2FEDBC411291}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C81E600-708B-4C84-8297-2FEDBC411291}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BF941AE-0996-4674-8D52-5E6555B55127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BF941AE-0996-4674-8D52-5E6555B55127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BF941AE-0996-4674-8D52-5E6555B55127}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BF941AE-0996-4674-8D52-5E6555B55127}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3FB7F9C5-9127-4604-96E6-E6F99890C1A4} = {9B68AA02-3AA6-4AB8-9AC3-87441447F86D}
+		{0292A729-27DE-4D41-A13B-8EC45C82F756} = {BB865C71-0E1A-465F-936F-DABC632A7420}
+		{5A4D4F30-2347-4CA5-833C-DD1B67B94CBA} = {BB865C71-0E1A-465F-936F-DABC632A7420}
+		{C526CBCF-9067-4D85-B264-7C8B95B5F0E9} = {BB865C71-0E1A-465F-936F-DABC632A7420}
+		{2F755D0F-DDEF-4426-9608-E1D1B0142BEB} = {BB865C71-0E1A-465F-936F-DABC632A7420}
+		{5AB0DE75-8217-4DE1-89C3-E3444D47134E} = {3E96C358-BAFC-40B1-B47A-89D36F48DBD8}
+		{723C7AA8-83E1-4064-8C7F-9A91C27E3BCA} = {3E96C358-BAFC-40B1-B47A-89D36F48DBD8}
+		{56EA538D-BF2A-495F-BBC1-CD4D5BB7AF92} = {3E96C358-BAFC-40B1-B47A-89D36F48DBD8}
+		{F8116229-FA50-4F8D-84E5-B9F3A2D733F7} = {3E96C358-BAFC-40B1-B47A-89D36F48DBD8}
+		{9C81E600-708B-4C84-8297-2FEDBC411291} = {9B68AA02-3AA6-4AB8-9AC3-87441447F86D}
+		{5BF941AE-0996-4674-8D52-5E6555B55127} = {9B68AA02-3AA6-4AB8-9AC3-87441447F86D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CAD2D198-3CBB-472A-B326-EF3BB352A1C0}
+	EndGlobalSection
+EndGlobal
