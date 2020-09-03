@@ -113,6 +113,32 @@ public static class Extension
         return nullableLong;
     }
 
+    public static DateTime xToDateTime(this object value)
+    {
+        DateTime defaultValue = default(DateTime);
+
+        try
+        {
+            defaultValue = Convert.ToDateTime(value);
+        }
+        catch { }
+
+        return defaultValue;
+    }
+
+    public static DateTime? xToDateTimeDefault(this object value)
+    {
+        DateTime? nullableDateTime = null;
+
+        try
+        {
+            nullableDateTime = (DateTime)value;
+        }
+        catch { }
+
+        return nullableDateTime;
+    }
+
     public static string GetURLFromText(this string text, string extension = "")
     {
         text = text.Trim().ToLower();
@@ -275,6 +301,29 @@ public static class Extension
         {
             var addr = new System.Net.Mail.MailAddress(email);
             return addr.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public static bool IsValidPhoneNumber(this string number, string areaCode)
+    {
+        try
+        {
+            if (number.Substring(0, 2) != areaCode)
+            {
+                number = (areaCode + number);
+            }
+
+            var phoneNumber = number.Trim()
+                        .Replace(" ", "")
+                        .Replace("-", "")
+                        .Replace("(", "")
+                        .Replace(")", "");
+
+            return Regex.Match(phoneNumber, @"^\+\d{5,15}$").Success;
         }
         catch
         {
