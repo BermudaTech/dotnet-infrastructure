@@ -21,6 +21,17 @@ namespace Bermuda.Infrastructure.Serialization
             return result;
         }
 
+        public string SerializeToXml<T>(T obj)
+        {
+            System.Xml.Serialization.XmlSerializer xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(T));
+            using (var writer = new StringWriter())
+            using (var xmlWriter = XmlWriter.Create(writer, new XmlWriterSettings { Indent = true }))
+            {
+                xmlSerializer.Serialize(xmlWriter, obj, null);
+                return writer.ToString();
+            }
+        }
+
         public void SerializeToXml<T>(T obj, string fileName)
         {
             SerializeToXml<T>(obj, fileName, null);
@@ -42,30 +53,6 @@ namespace Bermuda.Infrastructure.Serialization
             {
                 xmlSerializer.Serialize(xmlWriter, obj, ns);
             }
-        }
-
-        public Task<T> DeserializeFromXmlAsync<T>(string xml)
-        {
-            return Task.Run(() =>
-            {
-                return DeserializeFromXml<T>(xml);
-            });
-        }
-
-        public async Task SerializeToXmlAsync<T>(T obj, string fileName)
-        {
-            await Task.Run(() =>
-            {
-                SerializeToXml<T>(obj, fileName);
-            });
-        }
-
-        public async Task SerializeToXmlAsync<T>(T obj, string fileName, string nameSpace)
-        {
-            await Task.Run(() =>
-            {
-                SerializeToXml<T>(obj, fileName, nameSpace);
-            });
         }
     }
 }
