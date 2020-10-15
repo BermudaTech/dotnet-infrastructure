@@ -8,7 +8,7 @@ namespace Bermuda.Core.Test
         [Fact]
         public void PasswordToSHA256()
         {
-            string password = Extension.PasswordToSHA256("123456", "tdayi@hotmail.com");
+            string password = Extension.PasswordToSHA256("AA?_!??XZ2020#", "ff46fc7c-a34c-4d7e-bbf6-01d4df532516");
         }
     }
 }
