@@ -10,7 +10,7 @@ namespace Bermuda.Infrastructure.Database.EF.Mapping
         public void Configure(EntityTypeBuilder<TEntity> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasColumnType("serial");
+            builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Guid);
             builder.Property<StatusType>(x => x.StatusType);
             builder.Property(x => x.InsertedDate);
