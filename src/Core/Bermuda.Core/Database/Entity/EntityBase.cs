@@ -2,9 +2,9 @@
 
 namespace Bermuda.Core.Database.Entity
 {
-    public class EntityBase
+    public class EntityBase<PKey>
     {
-        public virtual long Id { get; set; }
+        public virtual PKey Id { get; set; }
         public virtual Guid Guid { get; set; }
         public virtual StatusType StatusType { get; set; }
 

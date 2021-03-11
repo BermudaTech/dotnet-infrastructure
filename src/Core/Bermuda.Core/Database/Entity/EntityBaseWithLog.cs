@@ -2,7 +2,7 @@
 
 namespace Bermuda.Core.Database.Entity
 {
-    public class EntityBaseWithLog : EntityBase
+    public class EntityBaseWithLog<PKey> : EntityBase<PKey>
     {
         public virtual string InsertedUser { get; set; }
         public virtual string InsertedIp { get; set; }

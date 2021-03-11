@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Bermuda.Infrastructure.Database.EF.Mapping
 {
-    public abstract class EntityBaseTypeConfiguration<TEntity> : IEntityTypeConfiguration<TEntity>
-        where TEntity : EntityBase
+    public abstract class EntityBaseTypeConfiguration<TEntity, PKey> : IEntityTypeConfiguration<TEntity>
+        where TEntity : EntityBase<PKey>
     {
         public void Configure(EntityTypeBuilder<TEntity> builder)
         {

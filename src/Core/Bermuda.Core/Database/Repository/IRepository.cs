@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Bermuda.Core.Repository.Repository
 {
-    public interface IRepository<TEntity> where TEntity : EntityBase
+    public interface IRepository<TEntity, PKey> where TEntity : EntityBase<PKey>
     {
-        Task<TEntity> GetByIdAsync(IUnitOfWork unitOfWork, long Id);
+        Task<TEntity> GetByIdAsync(IUnitOfWork unitOfWork, PKey Id);
         Task<TEntity> GetAsync(IUnitOfWork unitOfWork, Expression<Func<TEntity, bool>> predicate);
         Task<IEnumerable<TEntity>> GetListAsync(IUnitOfWork unitOfWork, Expression<Func<TEntity, bool>> predicate);
         Task<PagingResponse<TModel>> GetPageAsync<TModel>(IUnitOfWork unitOfWork, IQueryable<TModel> query, PagingRequest request) where TModel : class;

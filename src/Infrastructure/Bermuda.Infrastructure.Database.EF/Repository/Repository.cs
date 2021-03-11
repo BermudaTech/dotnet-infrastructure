@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 
 namespace Bermuda.Infrastructure.Database.Repository
 {
-    public class Repository<TEntity> : IRepository<TEntity>
-        where TEntity : EntityBase
+    public class Repository<TEntity, PKey> : IRepository<TEntity, PKey>
+        where TEntity : EntityBase<PKey>
     {
         private readonly IUnitOfWorkFactory unitOfWorkFactory;
 
@@ -32,13 +32,13 @@ namespace Bermuda.Infrastructure.Database.Repository
             return await dbSet.Where(predicate).FirstOrDefaultAsync();
         }
 
-        public async Task<TEntity> GetByIdAsync(IUnitOfWork unitOfWork, long Id)
+        public async Task<TEntity> GetByIdAsync(IUnitOfWork unitOfWork, PKey Id)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             var dbSet = context.Set<TEntity>();
 
-            return await dbSet.Where(x => x.Id == Id).FirstOrDefaultAsync();
+            return await dbSet.Where(x => x.Id.Equals(Id)).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<TEntity>> GetListAsync(IUnitOfWork unitOfWork, Expression<Func<TEntity, bool>> predicate)
@@ -150,7 +150,7 @@ namespace Bermuda.Infrastructure.Database.Repository
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
-            EntityBase entityBase = entity as EntityBase;
+            EntityBase<PKey> entityBase = entity as EntityBase<PKey>;
             entityBase.StatusType = StatusType.Deleted;
 
             context.Entry(entity).State = EntityState.Modified;
@@ -164,7 +164,7 @@ namespace Bermuda.Infrastructure.Database.Repository
 
             Parallel.ForEach(entities, entity =>
             {
-                EntityBase entityBase = entity as EntityBase;
+                EntityBase<PKey> entityBase = entity as EntityBase<PKey>;
                 entityBase.StatusType = StatusType.Deleted;
             });
 

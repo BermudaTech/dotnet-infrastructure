@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Bermuda.Infrastructure.Database.EF.Mapping
 {
-    public abstract class EntityBaseWithLogTypeConfiguration<TEntity> : IEntityTypeConfiguration<TEntity>
-        where TEntity : EntityBaseWithLog
+    public abstract class EntityBaseWithLogTypeConfiguration<TEntity, PKey> : IEntityTypeConfiguration<TEntity>
+        where TEntity : EntityBaseWithLog<PKey>
     {
         public void Configure(EntityTypeBuilder<TEntity> builder)
         {
