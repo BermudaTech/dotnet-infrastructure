@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Seri
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Core.Contract", "Core\Bermuda.Core.Contract\Bermuda.Core.Contract.csproj", "{9C81E600-708B-4C84-8297-2FEDBC411291}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bermuda.Core.WebApi", "Core\Bermuda.Core.WebApi\Bermuda.Core.WebApi.csproj", "{5BF941AE-0996-4674-8D52-5E6555B55127}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Core.WebApi", "Core\Bermuda.Core.WebApi\Bermuda.Core.WebApi.csproj", "{5BF941AE-0996-4674-8D52-5E6555B55127}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
