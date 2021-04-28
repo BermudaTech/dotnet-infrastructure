@@ -1,6 +1,6 @@
 ﻿namespace Bermuda.Core.Database.Entity
 {
-    public enum StatusType
+    public enum StateType
     {
         Active = 1,
         Passive = 0,

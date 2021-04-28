@@ -2,8 +2,10 @@
 
 namespace Bermuda.Core.Database.Entity
 {
-    public class EntityBaseWithLog<PKey> : EntityBase<PKey>
+    public class EntityBaseAudit<PKey> : EntityBase<PKey>
     {
+        public virtual Guid TrackId { get; set; }
+        public virtual StateType State { get; set; }
         public virtual string InsertedUser { get; set; }
         public virtual string InsertedIp { get; set; }
         public virtual DateTime InsertedDate { get; set; }
@@ -11,9 +13,10 @@ namespace Bermuda.Core.Database.Entity
         public virtual string UpdatedIp { get; set; }
         public virtual DateTime? UpdatedDate { get; set; }
 
-        public EntityBaseWithLog()
+        public EntityBaseAudit()
         {
-
+            TrackId = Guid.NewGuid();
+            State = StateType.Active;
         }
     }
 }

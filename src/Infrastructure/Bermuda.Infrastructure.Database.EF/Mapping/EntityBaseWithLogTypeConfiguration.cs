@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Bermuda.Infrastructure.Database.EF.Mapping
 {
     public abstract class EntityBaseWithLogTypeConfiguration<TEntity, PKey> : IEntityTypeConfiguration<TEntity>
-        where TEntity : EntityBaseWithLog<PKey>
+        where TEntity : EntityBaseAudit<PKey>
     {
         public void Configure(EntityTypeBuilder<TEntity> builder)
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
-            builder.Property(x => x.Guid);
-            builder.Property<StatusType>(x => x.StatusType);
+            builder.Property(x => x.TrackId);
+            builder.Property<StateType>(x => x.State);
             builder.Property(x => x.InsertedDate);
             builder.Property(x => x.InsertedIp).IsRequired().HasMaxLength(25);
             builder.Property(x => x.InsertedUser).IsRequired().HasMaxLength(25);

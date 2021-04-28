@@ -11,8 +11,6 @@ namespace Bermuda.Infrastructure.Database.EF.Mapping
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
-            builder.Property(x => x.Guid);
-            builder.Property<StatusType>(x => x.StatusType);
 
             EntityConfigure(builder);
         }
