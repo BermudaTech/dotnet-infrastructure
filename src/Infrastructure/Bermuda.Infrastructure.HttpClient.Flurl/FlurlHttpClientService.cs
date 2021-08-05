@@ -6,6 +6,17 @@ namespace Bermuda.Infrastructure.HttpClient.Flurl
 {
     public class FlurlHttpClientService : IHttpClientService
     {
+        public async Task<TResponse> GetJsonAsync<TResponse>(string url)
+        {
+            return await url.GetJsonAsync<TResponse>();
+        }
+
+        public async Task<TResponse> GetJsonWithBasicAuthAsync<TResponse>(string url, string username, string password)
+        {
+            return await url.WithBasicAuth(username, password)
+                            .GetJsonAsync<TResponse>();
+        }
+
         public async Task<TResponse> PostJsonAsync<TRquest, TResponse>(TRquest request, string url)
         {
             return await url.PostJsonAsync(request)
