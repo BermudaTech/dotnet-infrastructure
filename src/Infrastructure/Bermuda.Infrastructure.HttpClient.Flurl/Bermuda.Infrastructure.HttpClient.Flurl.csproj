@@ -12,4 +12,8 @@
     <ProjectReference Include="..\..\Core\Bermuda.Core\Bermuda.Core.csproj" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetDir)*.dll*&quot; &quot;$(SolutionDir)\..\lib&quot; /y /e" />
+  </Target>
+
 </Project>
