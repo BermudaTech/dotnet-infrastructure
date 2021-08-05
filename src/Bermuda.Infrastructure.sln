@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Core.WebApi", "Core
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bermuda.Infrastructure.HttpClient.Flurl", "Infrastructure\Bermuda.Infrastructure.HttpClient.Flurl\Bermuda.Infrastructure.HttpClient.Flurl.csproj", "{3B0C35F3-310F-4950-92CF-92993779B5BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bermuda.Infrastructure.HttpClient.Test", "Test\Bermuda.Infrastructure.HttpClient.Test\Bermuda.Infrastructure.HttpClient.Test.csproj", "{6186E107-7383-4871-BA4E-842169292693}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{3B0C35F3-310F-4950-92CF-92993779B5BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B0C35F3-310F-4950-92CF-92993779B5BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B0C35F3-310F-4950-92CF-92993779B5BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6186E107-7383-4871-BA4E-842169292693}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6186E107-7383-4871-BA4E-842169292693}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6186E107-7383-4871-BA4E-842169292693}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6186E107-7383-4871-BA4E-842169292693}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,6 +110,7 @@ Global
 		{9C81E600-708B-4C84-8297-2FEDBC411291} = {9B68AA02-3AA6-4AB8-9AC3-87441447F86D}
 		{5BF941AE-0996-4674-8D52-5E6555B55127} = {9B68AA02-3AA6-4AB8-9AC3-87441447F86D}
 		{3B0C35F3-310F-4950-92CF-92993779B5BF} = {BB865C71-0E1A-465F-936F-DABC632A7420}
+		{6186E107-7383-4871-BA4E-842169292693} = {3E96C358-BAFC-40B1-B47A-89D36F48DBD8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CAD2D198-3CBB-472A-B326-EF3BB352A1C0}
