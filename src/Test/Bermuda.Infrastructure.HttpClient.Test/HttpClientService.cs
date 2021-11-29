@@ -1,6 +1,5 @@
 using Bermuda.Core.HttpClient;
 using Bermuda.Infrastructure.HttpClient.Flurl;
-using System;
 using System.Threading.Tasks;
 using Xunit;
 

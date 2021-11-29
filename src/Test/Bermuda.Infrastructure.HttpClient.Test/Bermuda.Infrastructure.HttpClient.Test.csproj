@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Bermuda.Core\Bermuda.Core.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Bermuda.Infrastructure.HttpClient.Flurl\Bermuda.Infrastructure.HttpClient.Flurl.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Bermuda.Infrastructure.Serialization\Bermuda.Infrastructure.Serialization.csproj" />
   </ItemGroup>
 
 </Project>
