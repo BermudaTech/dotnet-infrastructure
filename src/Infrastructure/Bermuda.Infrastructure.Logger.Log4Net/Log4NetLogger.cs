@@ -10,11 +10,16 @@ namespace Bermuda.Infrastructure.Logger
 {
     public class Log4NetLogger : ILogger
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog _log;
+
+        public Log4NetLogger(string loggerName = null)
+        {
+            _log = string.IsNullOrEmpty(loggerName) ? LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType) : LogManager.GetLogger(loggerName);
+        }
 
         public static void Init(string configPath = null)
         {
-            XmlDocument log4netConfig = new XmlDocument();
+            var log4netConfig = new XmlDocument();
             log4netConfig.Load(File.OpenRead(string.IsNullOrEmpty(configPath) ? "log4net.config" : configPath));
             var repo = LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
             XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
@@ -24,7 +29,7 @@ namespace Bermuda.Infrastructure.Logger
             LogType logType,
             string message)
         {
-            this.LogWrite(logType, message, null);
+            LogWrite(logType, message, null);
         }
 
         public void Write(
@@ -32,7 +37,7 @@ namespace Bermuda.Infrastructure.Logger
             string message,
             Exception ex)
         {
-            this.LogWrite(logType, message, ex);
+            LogWrite(logType, message, ex);
         }
 
         public void Write(
@@ -40,7 +45,7 @@ namespace Bermuda.Infrastructure.Logger
             string message,
             params string[] parameters)
         {
-            this.LogWrite(logType, message, null, parameters);
+            LogWrite(logType, message, null, parameters);
         }
 
         public void Write(
@@ -49,7 +54,7 @@ namespace Bermuda.Infrastructure.Logger
             Exception ex,
             params string[] parameters)
         {
-            this.LogWrite(logType, message, ex, parameters);
+            LogWrite(logType, message, ex, parameters);
         }
 
         private void LogWrite(
@@ -73,27 +78,27 @@ namespace Bermuda.Infrastructure.Logger
             {
                 case LogType.Error:
                     if (ex != null)
-                        Log.Error(logMessage, ex);
+                        _log.Error(logMessage, ex);
                     else
-                        Log.Error(logMessage);
+                        _log.Error(logMessage);
                     break;
                 case LogType.Warning:
                     if (ex != null)
-                        Log.Warn(logMessage, ex);
+                        _log.Warn(logMessage, ex);
                     else
-                        Log.Warn(logMessage);
+                        _log.Warn(logMessage);
                     break;
                 case LogType.Info:
                     if (ex != null)
-                        Log.Info(logMessage, ex);
+                        _log.Info(logMessage, ex);
                     else
-                        Log.Info(logMessage);
+                        _log.Info(logMessage);
                     break;
                 case LogType.Debug:
                     if (ex != null)
-                        Log.Debug(logMessage, ex);
+                        _log.Debug(logMessage, ex);
                     else
-                        Log.Debug(logMessage);
+                        _log.Debug(logMessage);
                     break;
             }
         }
