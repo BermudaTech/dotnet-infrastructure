@@ -1,5 +1,4 @@
-﻿using Bermuda.Core.Cache.Interface;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 namespace Bermuda.Core.Cache
 {

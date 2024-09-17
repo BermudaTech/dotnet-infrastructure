@@ -1,4 +1,4 @@
-﻿namespace Bermuda.Core.Cache.Interface
+﻿namespace Bermuda.Core.Cache
 {
     public interface ICacheManager
     {
