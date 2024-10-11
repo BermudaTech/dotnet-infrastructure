@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bermuda.Core.CacheManager
+﻿namespace Bermuda.Core.Cache
 {
     public interface ICacheManager
     {
@@ -8,5 +6,6 @@ namespace Bermuda.Core.CacheManager
         T GetByKey<T>(string key);
         void Set<T>(string key, T data, DateTime expiryDate);
         void Remove(string key);
+        void RemoveAll();
     }
 }

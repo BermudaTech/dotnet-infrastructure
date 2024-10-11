@@ -1,24 +1,21 @@
-﻿using Bermuda.Core.CacheManager;
-using Microsoft.Extensions.Caching.Memory;
-using System;
+﻿using Microsoft.Extensions.Caching.Memory;
 
-namespace Bermuda.Core.WebApi.Cache
+namespace Bermuda.Core.Cache
 {
-    public class MemoryCacheManager : ICacheManager
+    public class CacheManager : ICacheManager
     {
-        private readonly IMemoryCache memoryCache;
+        private IMemoryCache _memoryCache;
 
-        public MemoryCacheManager(
-            IMemoryCache memoryCache)
+        public CacheManager(IMemoryCache memoryCache)
         {
-            this.memoryCache = memoryCache;
+            _memoryCache = memoryCache;
         }
 
         public bool CacheContains(string key)
         {
             object cacheValue;
 
-            memoryCache.TryGetValue(key, out cacheValue);
+            _memoryCache.TryGetValue(key, out cacheValue);
 
             if (cacheValue != null)
             {
@@ -32,12 +29,12 @@ namespace Bermuda.Core.WebApi.Cache
 
         public T GetByKey<T>(string key)
         {
-            return memoryCache.Get<T>(key);
+            return _memoryCache.Get<T>(key);
         }
 
         public void Set<T>(string key, T data, DateTime expiryDate)
         {
-            memoryCache.Set(key, data, new MemoryCacheEntryOptions
+            _memoryCache.Set(key, data, new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = expiryDate,
                 Priority = CacheItemPriority.Normal
@@ -48,8 +45,14 @@ namespace Bermuda.Core.WebApi.Cache
         {
             if (CacheContains(key))
             {
-                memoryCache.Remove(key);
+                _memoryCache.Remove(key);
             }
+        }
+
+        public void RemoveAll()
+        {
+            _memoryCache.Dispose();
+            _memoryCache = new MemoryCache(new MemoryCacheOptions());
         }
     }
 }
