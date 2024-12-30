@@ -1,4 +1,5 @@
 ﻿using StackExchange.Redis;
+using System.Text.Json;
 
 namespace Bermuda.Core.Cache
 {
@@ -22,12 +23,25 @@ namespace Bermuda.Core.Cache
         {
             var value = _database.StringGet(key);
             if (value.IsNullOrEmpty) return default;
-            return (T)Convert.ChangeType(value, typeof(T));
+
+            if (typeof(T).IsValueType || typeof(T) == typeof(string))
+            {
+                if (typeof(T).IsEnum) return (T)Enum.Parse(typeof(T), value, true);
+                return (T)Convert.ChangeType(value.ToString(), typeof(T));
+            }
+                
+            return JsonSerializer.Deserialize<T>(value);
         }
 
         public void Set<T>(string key, T data, DateTime expiryDate)
         {
-            _database.StringSet(key, data.ToString(), expiryDate - DateTime.Now);
+            var expiry = expiryDate - DateTime.UtcNow;
+            if (typeof(T).IsValueType || typeof(T) == typeof(string)) _database.StringSet(key, data.ToString(), expiry);
+            else
+            {
+                var jsonValue = JsonSerializer.Serialize(data);
+                _database.StringSet(key, jsonValue, expiry);
+            }
         }
 
         public void Remove(string key)
