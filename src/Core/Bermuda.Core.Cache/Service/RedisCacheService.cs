@@ -8,10 +8,10 @@ namespace Bermuda.Core.Cache
         private readonly IConnectionMultiplexer _connection;
         private readonly IDatabase _database;
 
-        public RedisCacheService(string connectionString)
+        public RedisCacheService(string connectionString, int index = 0)
         {
             _connection = ConnectionMultiplexer.Connect(connectionString);
-            _database = _connection.GetDatabase();
+            _database = _connection.GetDatabase(index);
         }
 
         public bool CacheContains(string key)
@@ -55,7 +55,7 @@ namespace Bermuda.Core.Cache
             foreach (var endpoint in endpoints)
             {
                 var server = _connection.GetServer(endpoint);
-                foreach (var key in server.Keys())
+                foreach (var key in server.Keys(_database.Database))
                 {
                     _database.KeyDelete(key);
                 }
