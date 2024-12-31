@@ -2,34 +2,24 @@
 
 namespace Bermuda.Core.Cache
 {
-    public class CacheManager : ICacheManager
+    public class InMemoryCacheService : ICacheService
     {
         private IMemoryCache _memoryCache;
 
-        public CacheManager(IMemoryCache memoryCache)
+        public InMemoryCacheService(IMemoryCache memoryCache)
         {
             _memoryCache = memoryCache;
         }
 
         public bool CacheContains(string key)
         {
-            object cacheValue;
-
-            _memoryCache.TryGetValue(key, out cacheValue);
-
-            if (cacheValue != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return _memoryCache.TryGetValue(key, out _);
         }
 
         public T GetByKey<T>(string key)
         {
-            return _memoryCache.Get<T>(key);
+            if (_memoryCache.TryGetValue(key, out var value)) return (T)value;
+            return default;
         }
 
         public void Set<T>(string key, T data, DateTime expiryDate)
@@ -43,10 +33,7 @@ namespace Bermuda.Core.Cache
 
         public void Remove(string key)
         {
-            if (CacheContains(key))
-            {
-                _memoryCache.Remove(key);
-            }
+            _memoryCache.Remove(key);
         }
 
         public void RemoveAll()

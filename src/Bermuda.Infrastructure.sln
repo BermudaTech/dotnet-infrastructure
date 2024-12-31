@@ -5,9 +5,15 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-Core", "01-Core", "{9B68AA02-3AA6-4AB8-9AC3-87441447F86D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-Infrastructure", "02-Infrastructure", "{BB865C71-0E1A-465F-936F-DABC632A7420}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Core", "Core\Bermuda.Core\Bermuda.Core.csproj", "{3FB7F9C5-9127-4604-96E6-E6F99890C1A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bermuda.Core.Cache", "Core\Bermuda.Core.Cache\Bermuda.Core.Cache.csproj", "{B106AC95-9ABC-48F1-B792-1D515B5AA2EE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Core.Contract", "Core\Bermuda.Core.Contract\Bermuda.Core.Contract.csproj", "{9C81E600-708B-4C84-8297-2FEDBC411291}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Core.WebApi", "Core\Bermuda.Core.WebApi\Bermuda.Core.WebApi.csproj", "{5BF941AE-0996-4674-8D52-5E6555B55127}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-Infrastructure", "02-Infrastructure", "{BB865C71-0E1A-465F-936F-DABC632A7420}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Database.EF", "Infrastructure\Bermuda.Infrastructure.Database.EF\Bermuda.Infrastructure.Database.EF.csproj", "{0292A729-27DE-4D41-A13B-8EC45C82F756}"
 EndProject
@@ -16,6 +22,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Mapper.AutoMapper", "Infrastructure\Bermuda.Infrastructure.Mapper.AutoMapper\Bermuda.Infrastructure.Mapper.AutoMapper.csproj", "{C526CBCF-9067-4D85-B264-7C8B95B5F0E9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Serialization", "Infrastructure\Bermuda.Infrastructure.Serialization\Bermuda.Infrastructure.Serialization.csproj", "{2F755D0F-DDEF-4426-9608-E1D1B0142BEB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.HttpClient.Flurl", "Infrastructure\Bermuda.Infrastructure.HttpClient.Flurl\Bermuda.Infrastructure.HttpClient.Flurl.csproj", "{3B0C35F3-310F-4950-92CF-92993779B5BF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03-Test", "03-Test", "{3E96C358-BAFC-40B1-B47A-89D36F48DBD8}"
 EndProject
@@ -27,15 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Logg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.Serialization.Test", "Test\Bermuda.Infrastructure.Serialization.Test\Bermuda.Infrastructure.Serialization.Test.csproj", "{F8116229-FA50-4F8D-84E5-B9F3A2D733F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Core.Contract", "Core\Bermuda.Core.Contract\Bermuda.Core.Contract.csproj", "{9C81E600-708B-4C84-8297-2FEDBC411291}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Core.WebApi", "Core\Bermuda.Core.WebApi\Bermuda.Core.WebApi.csproj", "{5BF941AE-0996-4674-8D52-5E6555B55127}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.HttpClient.Flurl", "Infrastructure\Bermuda.Infrastructure.HttpClient.Flurl\Bermuda.Infrastructure.HttpClient.Flurl.csproj", "{3B0C35F3-310F-4950-92CF-92993779B5BF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bermuda.Infrastructure.HttpClient.Test", "Test\Bermuda.Infrastructure.HttpClient.Test\Bermuda.Infrastructure.HttpClient.Test.csproj", "{6186E107-7383-4871-BA4E-842169292693}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bermuda.Core.Cache", "Bermuda.Core.Cache\Bermuda.Core.Cache.csproj", "{B106AC95-9ABC-48F1-B792-1D515B5AA2EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

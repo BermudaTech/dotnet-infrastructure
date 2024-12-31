@@ -1,6 +1,6 @@
 ﻿namespace Bermuda.Core.Cache
 {
-    public interface ICacheManager
+    public interface ICacheService
     {
         bool CacheContains(string key);
         T GetByKey<T>(string key);
