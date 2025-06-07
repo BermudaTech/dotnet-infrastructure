@@ -12,7 +12,8 @@ namespace Bermuda.Infrastructure.Logger.Serilog
         string applicationName,
         string tenant,
         string environment,
-        string newRelicLicenseKey)
+        string newRelicLicenseKey,
+        LogEventLevel minimumLevel = LogEventLevel.Information)
         {
             ArgumentNullException.ThrowIfNull(hostBuilder, nameof(hostBuilder));
             ArgumentNullException.ThrowIfNull(applicationName, nameof(applicationName));
@@ -20,14 +21,17 @@ namespace Bermuda.Infrastructure.Logger.Serilog
             ArgumentNullException.ThrowIfNull(newRelicLicenseKey, nameof(newRelicLicenseKey));
 
             Log.Logger = new LoggerConfiguration()
-                .Enrich.WithProperty("Application", applicationName)
-                .Enrich.WithProperty("Tenant", tenant)
-                .Enrich.WithProperty("Environment", environment)
-                .Enrich.FromLogContext()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .WriteTo.NewRelicLogs(newRelicLicenseKey, applicationName)
-                .WriteTo.Console()
-                .CreateLogger();
+            .MinimumLevel.Is(minimumLevel)
+            .Enrich.WithProperty("Application", applicationName)
+            .Enrich.WithProperty("Tenant", tenant)
+            .Enrich.WithProperty("Environment", environment)
+            .Enrich.FromLogContext()
+            .MinimumLevel.Override("Microsoft", minimumLevel)
+            .WriteTo.NewRelicLogs(licenseKey: newRelicLicenseKey, applicationName: applicationName)
+            .WriteTo.Console()
+            .CreateLogger();
+
+            Log.Information("Serilog + NewRelic logger started. App: {Application}, Env: {Environment}, Tenant: {Tenant}", applicationName, environment, tenant);
 
             return hostBuilder.UseSerilog();
         }
