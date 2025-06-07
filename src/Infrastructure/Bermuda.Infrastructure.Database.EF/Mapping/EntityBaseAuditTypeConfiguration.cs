@@ -12,7 +12,7 @@ namespace Bermuda.Infrastructure.Database.EF.Mapping
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.TrackId);
-            builder.Property<StateType>(x => x.State);
+            builder.Property<StatusType>(x => x.StatusType);
             builder.Property(x => x.InsertedDate);
             builder.Property(x => x.InsertedIp).IsRequired().HasMaxLength(25);
             builder.Property(x => x.InsertedUser).IsRequired().HasMaxLength(25);
