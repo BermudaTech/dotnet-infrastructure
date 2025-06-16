@@ -151,7 +151,7 @@ namespace Bermuda.Infrastructure.Database.Repository
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             EntityBaseAudit<PKey> entityBase = entity as EntityBaseAudit<PKey>;
-            entityBase.State = StateType.Deleted;
+            entityBase.StatusType = StatusType.Deleted;
 
             context.Entry(entity).State = EntityState.Modified;
 
@@ -165,7 +165,7 @@ namespace Bermuda.Infrastructure.Database.Repository
             Parallel.ForEach(entities, entity =>
             {
                 EntityBaseAudit<PKey> entityBase = entity as EntityBaseAudit<PKey>;
-                entityBase.State = StateType.Deleted;
+                entityBase.StatusType = StatusType.Deleted;
             });
 
             context.UpdateRange(entities);

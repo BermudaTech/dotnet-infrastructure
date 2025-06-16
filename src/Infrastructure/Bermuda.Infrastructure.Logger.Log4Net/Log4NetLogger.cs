@@ -25,6 +25,14 @@ namespace Bermuda.Infrastructure.Logger
             XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
         }
 
+        public IDisposable GenerateCorrelationId(string correlationId = null)
+        {
+            var id = string.IsNullOrEmpty(correlationId) ? Guid.NewGuid().ToString() : correlationId;
+            LogicalThreadContext.Properties["CorrelationId"] = id;
+            return new Log4NetCorrelationScope();
+        }
+
+
         public void Write(
             LogType logType,
             string message)
@@ -101,6 +109,15 @@ namespace Bermuda.Infrastructure.Logger
                         _log.Debug(logMessage);
                     break;
             }
+        }
+    }
+
+    // IDisposable implementation:
+    public class Log4NetCorrelationScope : IDisposable
+    {
+        public void Dispose()
+        {
+            log4net.LogicalThreadContext.Properties.Remove("CorrelationId");
         }
     }
 }
