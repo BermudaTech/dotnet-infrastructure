@@ -8,9 +8,14 @@ namespace Bermuda.Core.Cache
         private readonly IConnectionMultiplexer _connection;
         private readonly IDatabase _database;
 
-        public RedisCacheService(string connectionString, int index = 0)
+        public RedisCacheService(string connectionString, int index = 0, bool ssl = true)
         {
-            _connection = ConnectionMultiplexer.Connect(connectionString);
+            var configurationOptions = new ConfigurationOptions
+            {
+                EndPoints = { connectionString },
+                Ssl = ssl
+            };
+            _connection = ConnectionMultiplexer.Connect(configurationOptions);
             _database = _connection.GetDatabase(index);
         }
 
