@@ -5,14 +5,14 @@ namespace Bermuda.Core.Cache
 {
     public static class DependencyInjectionExtension
     {
-        public static IServiceCollection AddCacheService(this IServiceCollection services, CacheTypeEnum cacheTypeEnum = CacheTypeEnum.InMemory, string connectionString = null, int index = 0)
+        public static IServiceCollection AddCacheService(this IServiceCollection services, CacheTypeEnum cacheTypeEnum = CacheTypeEnum.InMemory, string connectionString = null, int index = 0, bool ssl = true, bool abortOnConnectFail = false, int timeout = 10000)
         {
             ThrowHelper.ThrowIfNull(services);
 
             switch (cacheTypeEnum)
             {
                 case CacheTypeEnum.Redis:
-                    services.AddSingleton<ICacheService>(provider => new RedisCacheService(connectionString, index));
+                    services.AddSingleton<ICacheService>(provider => new RedisCacheService(connectionString, index, ssl, abortOnConnectFail, timeout));
                     break;
                 default:
                     services.AddMemoryCache();
