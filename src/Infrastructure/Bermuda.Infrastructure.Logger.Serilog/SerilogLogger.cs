@@ -68,6 +68,18 @@ public class SerilogLogger : Core.Logger.ILogger
                 else
                     Log.Debug(logTemplate, message, parameters);
                 break;
+            case LogType.Verbose:
+                if (ex != null)
+                    Log.Verbose(ex, logTemplate, message, parameters);
+                else
+                    Log.Verbose(logTemplate, message, parameters);
+                break;
+            case LogType.Fatal:
+                if (ex != null)
+                    Log.Fatal(ex, logTemplate, message, parameters);
+                else
+                    Log.Fatal(logTemplate, message, parameters);
+                break;
             default:
                 if (ex != null)
                     Log.Information(ex, logTemplate, message, parameters);

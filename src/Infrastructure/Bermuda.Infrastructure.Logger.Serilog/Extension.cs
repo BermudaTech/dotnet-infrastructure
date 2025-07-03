@@ -22,12 +22,12 @@ public static class Extension
 
         Log.Logger = new LoggerConfiguration()
         .MinimumLevel.Is(minimumLevel)
-        .Enrich.WithProperty("Application", applicationName)
-        .Enrich.WithProperty("Tenant", tenant)
-        .Enrich.WithProperty("Environment", environment)
+        .Enrich.WithProperty("application", applicationName)
+        .Enrich.WithProperty("tenant", tenant)
+        .Enrich.WithProperty("environment", environment)
         .Enrich.FromLogContext()
-        .WriteTo.NewRelicLogs(licenseKey: newRelicLicenseKey, applicationName: applicationName, restrictedToMinimumLevel: minimumLevel)
         .WriteTo.Console()
+        .WriteTo.NewRelicLogs(licenseKey: newRelicLicenseKey, applicationName: applicationName, restrictedToMinimumLevel: minimumLevel)
         .CreateLogger();
 
         Log.Information("Serilog + NewRelic logger started. App: {Application}, Env: {Environment}, Tenant: {Tenant}, LogLevel: {LogLevel}", applicationName, environment, tenant, minimumLevel);
