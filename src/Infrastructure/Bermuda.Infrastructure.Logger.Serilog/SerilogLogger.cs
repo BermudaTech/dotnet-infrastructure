@@ -39,8 +39,8 @@ public class SerilogLogger : Core.Logger.ILogger
     {
         var hasParams = parameters != null && parameters.Length > 0;
         string logTemplate = hasParams
-            ? "{Message} | Class: {ClassName} | Method: {MethodName} | Line: {LineNumber} | Args: {@Args}"
-            : "{Message}";
+        ? "{Message} | Class: {ClassName} | Method: {MethodName} | Line: {LineNumber} | Args: {@Args}"
+        : "{Message}";
 
         switch (logType)
         {
@@ -89,4 +89,3 @@ public class SerilogLogger : Core.Logger.ILogger
         }
     }
 }
-
