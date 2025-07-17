@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
+using NewRelic.LogEnrichers.Serilog;
 using Serilog;
 using Serilog.Events;
 
@@ -24,10 +25,12 @@ public static class Extension
         .MinimumLevel.Is(minimumLevel)
         .Enrich.WithProperty("application", applicationName)
         .Enrich.WithProperty("tenant", tenant)
-        .Enrich.WithProperty("environment", environment)
         .Enrich.FromLogContext()
-        .WriteTo.Console()
+        .Enrich.WithMachineName()
+        .Enrich.WithEnvironment(environment)
+        .Enrich.WithNewRelicLogsInContext()
         .WriteTo.NewRelicLogs(licenseKey: newRelicLicenseKey, applicationName: applicationName, restrictedToMinimumLevel: minimumLevel)
+        .WriteTo.Console()
         .CreateLogger();
 
         Log.Information("Serilog + NewRelic logger started. App: {Application}, Env: {Environment}, Tenant: {Tenant}, LogLevel: {LogLevel}", applicationName, environment, tenant, minimumLevel);
