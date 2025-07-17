@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Hosting;
-using NewRelic.LogEnrichers.Serilog;
 using Serilog;
 using Serilog.Events;
 
@@ -28,7 +27,6 @@ public static class Extension
         .Enrich.FromLogContext()
         .Enrich.WithMachineName()
         .Enrich.WithEnvironment(environment)
-        .Enrich.WithNewRelicLogsInContext()
         .WriteTo.NewRelicLogs(licenseKey: newRelicLicenseKey, applicationName: applicationName, restrictedToMinimumLevel: minimumLevel)
         .WriteTo.Console()
         .CreateLogger();
