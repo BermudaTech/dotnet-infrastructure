@@ -22,7 +22,6 @@ public static class Extension
 
         Log.Logger = new LoggerConfiguration()
         .MinimumLevel.Is(minimumLevel)
-        .Enrich.WithProperty("application", applicationName)
         .Enrich.WithProperty("tenant", tenant)
         .Enrich.FromLogContext()
         .Enrich.WithMachineName()
