@@ -2,89 +2,94 @@
 using Serilog;
 using Serilog.Context;
 
-
 namespace Bermuda.Infrastructure.Logger.Serilog;
 
 public class SerilogLogger : Core.Logger.ILogger
 {
     public IDisposable GenerateCorrelationId(string correlationId = null)
     {
-        if (string.IsNullOrEmpty(correlationId))
-            correlationId = Guid.NewGuid().ToString();
-
-        return LogContext.PushProperty("CorrelationId", correlationId);
+        var id = string.IsNullOrEmpty(correlationId) ? Guid.NewGuid().ToString() : correlationId;
+        return LogContext.PushProperty("CorrelationId", id);
     }
 
     public void Write(LogType logType, string message)
     {
-        LogWithSerilog(logType, message, null, null);
+        LogWrite(logType, message, null);
     }
 
     public void Write(LogType logType, string message, Exception ex)
     {
-        LogWithSerilog(logType, message, ex, null);
+        LogWrite(logType, message, ex);
     }
 
     public void Write(LogType logType, string message, params string[] parameters)
     {
-        LogWithSerilog(logType, message, null, parameters);
+        LogWrite(logType, message, null, parameters);
     }
 
     public void Write(LogType logType, string message, Exception ex, params string[] parameters)
     {
-        LogWithSerilog(logType, message, ex, parameters);
+        LogWrite(logType, message, ex, parameters);
     }
 
-    private void LogWithSerilog(LogType logType, string message, Exception ex, string[] parameters)
+    private void LogWrite(LogType logType, string templateOrMessage, Exception ex = null, params string[] parameters)
     {
-        var hasParams = parameters != null && parameters.Length > 0;
-        string logTemplate = hasParams
-        ? "{Message} | Class: {ClassName} | Method: {MethodName} | Line: {LineNumber} | Args: {@Args}"
-        : "{Message}";
+        string messageToLog;
+
+        if (parameters != null && parameters.Length > 0)
+        {
+            try
+            {
+                messageToLog = string.Format(templateOrMessage, parameters);
+                parameters = Array.Empty<string>();
+            }
+            catch (FormatException e)
+            {
+                messageToLog = templateOrMessage + " | Parameters: " + string.Join(", ", parameters);
+                parameters = Array.Empty<string>();
+                Log.Error(e, "SERILOG: Failed to format log message: {Message}", templateOrMessage);
+            }
+        }
+        else
+        {
+            messageToLog = templateOrMessage;
+        }
 
         switch (logType)
         {
             case LogType.Error:
-                if (ex != null)
-                    Log.Error(ex, logTemplate, message, parameters);
-                else
-                    Log.Error(logTemplate, message, parameters);
+                if (ex != null) Log.Error(ex, messageToLog, parameters);
+                else Log.Error(messageToLog, parameters);
                 break;
+
             case LogType.Warning:
-                if (ex != null)
-                    Log.Warning(ex, logTemplate, message, parameters);
-                else
-                    Log.Warning(logTemplate, message, parameters);
+                if (ex != null) Log.Warning(ex, messageToLog, parameters);
+                else Log.Warning(messageToLog, parameters);
                 break;
+
             case LogType.Info:
-                if (ex != null)
-                    Log.Information(ex, logTemplate, message, parameters);
-                else
-                    Log.Information(logTemplate, message, parameters);
+                if (ex != null) Log.Information(ex, messageToLog, parameters);
+                else Log.Information(messageToLog, parameters);
                 break;
+
             case LogType.Debug:
-                if (ex != null)
-                    Log.Debug(ex, logTemplate, message, parameters);
-                else
-                    Log.Debug(logTemplate, message, parameters);
+                if (ex != null) Log.Debug(ex, messageToLog, parameters);
+                else Log.Debug(messageToLog, parameters);
                 break;
+
             case LogType.Verbose:
-                if (ex != null)
-                    Log.Verbose(ex, logTemplate, message, parameters);
-                else
-                    Log.Verbose(logTemplate, message, parameters);
+                if (ex != null) Log.Verbose(ex, messageToLog, parameters);
+                else Log.Verbose(messageToLog, parameters);
                 break;
+
             case LogType.Fatal:
-                if (ex != null)
-                    Log.Fatal(ex, logTemplate, message, parameters);
-                else
-                    Log.Fatal(logTemplate, message, parameters);
+                if (ex != null) Log.Fatal(ex, messageToLog, parameters);
+                else Log.Fatal(messageToLog, parameters);
                 break;
+
             default:
-                if (ex != null)
-                    Log.Information(ex, logTemplate, message, parameters);
-                else
-                    Log.Information(logTemplate, message, parameters);
+                if (ex != null) Log.Information(ex, messageToLog, parameters);
+                else Log.Information(messageToLog, parameters);
                 break;
         }
     }
