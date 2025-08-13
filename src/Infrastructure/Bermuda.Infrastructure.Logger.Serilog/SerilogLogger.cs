@@ -58,38 +58,38 @@ public class SerilogLogger : Core.Logger.ILogger
         switch (logType)
         {
             case LogType.Error:
-                if (ex != null) Log.Error(ex, messageToLog, parameters);
-                else Log.Error(messageToLog, parameters);
+                if (ex != null) Log.Error(ex, messageToLog);
+                else Log.Error(messageToLog);
                 break;
 
             case LogType.Warning:
-                if (ex != null) Log.Warning(ex, messageToLog, parameters);
-                else Log.Warning(messageToLog, parameters);
+                if (ex != null) Log.Warning(ex, messageToLog);
+                else Log.Warning(messageToLog);
                 break;
 
             case LogType.Info:
-                if (ex != null) Log.Information(ex, messageToLog, parameters);
-                else Log.Information(messageToLog, parameters);
+                if (ex != null) Log.Information(ex, messageToLog);
+                else Log.Information(messageToLog);
                 break;
 
             case LogType.Debug:
-                if (ex != null) Log.Debug(ex, messageToLog, parameters);
-                else Log.Debug(messageToLog, parameters);
+                if (ex != null) Log.Debug(ex, messageToLog);
+                else Log.Debug(messageToLog);
                 break;
 
             case LogType.Verbose:
-                if (ex != null) Log.Verbose(ex, messageToLog, parameters);
-                else Log.Verbose(messageToLog, parameters);
+                if (ex != null) Log.Verbose(ex, messageToLog);
+                else Log.Verbose(messageToLog);
                 break;
 
             case LogType.Fatal:
-                if (ex != null) Log.Fatal(ex, messageToLog, parameters);
-                else Log.Fatal(messageToLog, parameters);
+                if (ex != null) Log.Fatal(ex, messageToLog);
+                else Log.Fatal(messageToLog);
                 break;
 
             default:
-                if (ex != null) Log.Information(ex, messageToLog, parameters);
-                else Log.Information(messageToLog, parameters);
+                if (ex != null) Log.Information(ex, messageToLog);
+                else Log.Information(messageToLog);
                 break;
         }
     }

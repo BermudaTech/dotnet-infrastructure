@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 
@@ -13,25 +14,41 @@ public static class Extension
     string tenant,
     string environment,
     string newRelicLicenseKey,
-    LogEventLevel minimumLevel = LogEventLevel.Information)
+    LogLevel minimumLevel = LogLevel.Information)
     {
         ArgumentNullException.ThrowIfNull(hostBuilder, nameof(hostBuilder));
         ArgumentNullException.ThrowIfNull(applicationName, nameof(applicationName));
         ArgumentNullException.ThrowIfNull(environment, nameof(environment));
         ArgumentNullException.ThrowIfNull(newRelicLicenseKey, nameof(newRelicLicenseKey));
+        var logEventlevel = ConvertToLogEventLevel(minimumLevel);
 
         Log.Logger = new LoggerConfiguration()
-        .MinimumLevel.Is(minimumLevel)
+        .MinimumLevel.Is(logEventlevel)
         .Enrich.WithProperty("tenant", tenant)
         .Enrich.FromLogContext()
         .Enrich.WithMachineName()
         .Enrich.WithEnvironment(environment)
-        .WriteTo.NewRelicLogs(licenseKey: newRelicLicenseKey, applicationName: applicationName, restrictedToMinimumLevel: minimumLevel)
+        .WriteTo.NewRelicLogs(licenseKey: newRelicLicenseKey, applicationName: applicationName, restrictedToMinimumLevel: logEventlevel)
         .WriteTo.Console()
         .CreateLogger();
 
-        Log.Information("Serilog + NewRelic logger started. App: {Application}, Env: {Environment}, Tenant: {Tenant}, LogLevel: {LogLevel}", applicationName, environment, tenant, minimumLevel);
+        Log.Information("Serilog + NewRelic logger started. App: {Application}, Env: {Environment}, Tenant: {Tenant}, LogLevel: {LogLevel}", applicationName, environment, tenant, logEventlevel);
 
         return hostBuilder.UseSerilog();
+    }
+
+    private static LogEventLevel ConvertToLogEventLevel(LogLevel logLevel)
+    {
+        return logLevel switch
+        {
+            LogLevel.Trace => LogEventLevel.Verbose,
+            LogLevel.Debug => LogEventLevel.Debug,
+            LogLevel.Information => LogEventLevel.Information,
+            LogLevel.Warning => LogEventLevel.Warning,
+            LogLevel.Error => LogEventLevel.Error,
+            LogLevel.Critical => LogEventLevel.Fatal,
+            LogLevel.None => throw new InvalidOperationException("LogLevel.None cannot be mapped to LogEventLevel."),
+            _ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null)
+        };
     }
 }
