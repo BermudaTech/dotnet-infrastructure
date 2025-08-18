@@ -41,12 +41,10 @@ public class SerilogLogger : Core.Logger.ILogger
             try
             {
                 messageToLog = string.Format(templateOrMessage, parameters);
-                parameters = Array.Empty<string>();
             }
             catch (FormatException e)
             {
                 messageToLog = templateOrMessage + " | Parameters: " + string.Join(", ", parameters);
-                parameters = Array.Empty<string>();
                 Log.Error(e, "SERILOG: Failed to format log message: {Message}", templateOrMessage);
             }
         }
