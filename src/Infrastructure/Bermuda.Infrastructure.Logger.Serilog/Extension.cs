@@ -35,7 +35,9 @@ public static class Extension
         .CreateLogger();
 
         Log.Information("Serilog + NewRelic logger started. App: {Application}, Env: {Environment}, Tenant: {Tenant}, LogLevel: {LogLevel}", applicationName, environment, tenant, logEventlevel);
+        
         Environment.SetEnvironmentVariable("NEW_RELIC_LICENSE_KEY", newRelicLicenseKey, EnvironmentVariableTarget.Process);
+        Environment.SetEnvironmentVariable("NEW_RELIC_APP_NAME", applicationName, EnvironmentVariableTarget.Process);
 
         return hostBuilder.UseSerilog();
     }
