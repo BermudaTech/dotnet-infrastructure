@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NewRelic.LogEnrichers.Serilog;
 using Serilog;
+using Serilog.Debugging;
 using Serilog.Events;
 
 
@@ -22,15 +23,19 @@ public static class Extension
         ArgumentNullException.ThrowIfNull(environment, nameof(environment));
         ArgumentNullException.ThrowIfNull(newRelicLicenseKey, nameof(newRelicLicenseKey));
         var logEventlevel = ConvertToLogEventLevel(minimumLevel);
+        
+        //Optional
+        SelfLog.Enable(Console.Error.WriteLine);
 
         Log.Logger = new LoggerConfiguration()
         .MinimumLevel.Is(logEventlevel)
+        .Enrich.WithProperty("application", applicationName)
+        .Enrich.WithProperty("environment", environment)
         .Enrich.WithProperty("tenant", tenant)
         .Enrich.FromLogContext()
-        .Enrich.WithMachineName()
         .Enrich.WithEnvironment(environment)
         .Enrich.WithNewRelicLogsInContext()
-        .WriteTo.Console()
+        .WriteTo.Console(restrictedToMinimumLevel: logEventlevel)
         .WriteTo.NewRelicLogs(licenseKey: newRelicLicenseKey, applicationName: applicationName, restrictedToMinimumLevel: logEventlevel)
         .CreateLogger();
 
