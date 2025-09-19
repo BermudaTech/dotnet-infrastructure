@@ -1,90 +1,207 @@
 ﻿using Bermuda.Core.Logger;
-using Serilog;
-using Serilog.Context;
-
+using Microsoft.Extensions.Logging;
 
 namespace Bermuda.Infrastructure.Logger.Serilog;
 
 public class SerilogLogger : Core.Logger.ILogger
 {
+    private readonly Microsoft.Extensions.Logging.ILogger<SerilogLogger> logger;
+
+    public SerilogLogger(Microsoft.Extensions.Logging.ILogger<SerilogLogger> logger)
+    {
+        this.logger = logger;
+    }
+
     public IDisposable GenerateCorrelationId(string correlationId = null)
     {
-        if (string.IsNullOrEmpty(correlationId))
-            correlationId = Guid.NewGuid().ToString();
+        var id = string.IsNullOrEmpty(correlationId) ? Guid.NewGuid().ToString() : correlationId;
 
-        return LogContext.PushProperty("CorrelationId", correlationId);
+        // Microsoft logger’da CorrelationId taşımak için scope kullanılır.
+        return logger.BeginScope(new Dictionary<string, object>
+        {
+            ["CorrelationId"] = id
+        });
     }
 
     public void Write(LogType logType, string message)
     {
-        LogWithSerilog(logType, message, null, null);
+        LogWrite(logType, message, null);
     }
 
     public void Write(LogType logType, string message, Exception ex)
     {
-        LogWithSerilog(logType, message, ex, null);
+        LogWrite(logType, message, ex);
     }
 
     public void Write(LogType logType, string message, params string[] parameters)
     {
-        LogWithSerilog(logType, message, null, parameters);
+        LogWrite(logType, message, null, parameters);
     }
 
     public void Write(LogType logType, string message, Exception ex, params string[] parameters)
     {
-        LogWithSerilog(logType, message, ex, parameters);
+        LogWrite(logType, message, ex, parameters);
     }
 
-    private void LogWithSerilog(LogType logType, string message, Exception ex, string[] parameters)
+    private void LogWrite(LogType logType, string templateOrMessage, Exception ex = null, params string[] parameters)
     {
-        var hasParams = parameters != null && parameters.Length > 0;
-        string logTemplate = hasParams
-        ? "{Message} | Class: {ClassName} | Method: {MethodName} | Line: {LineNumber} | Args: {@Args}"
-        : "{Message}";
+        string messageToLog;
+
+        if (parameters != null && parameters.Length > 0)
+        {
+            try
+            {
+                messageToLog = string.Format(templateOrMessage, parameters);
+            }
+            catch (FormatException e)
+            {
+                messageToLog = templateOrMessage + " | Parameters: " + string.Join(", ", parameters);
+                logger.LogError(e, "Failed to format log message: {Message}", templateOrMessage);
+
+            }
+        }
+        else
+        {
+            messageToLog = templateOrMessage;
+        }
 
         switch (logType)
         {
             case LogType.Error:
-                if (ex != null)
-                    Log.Error(ex, logTemplate, message, parameters);
-                else
-                    Log.Error(logTemplate, message, parameters);
+                if (ex != null) logger.LogError(ex, messageToLog);
+                else logger.LogError(messageToLog);
                 break;
+
             case LogType.Warning:
-                if (ex != null)
-                    Log.Warning(ex, logTemplate, message, parameters);
-                else
-                    Log.Warning(logTemplate, message, parameters);
+                if (ex != null) logger.LogWarning(ex, messageToLog);
+                else logger.LogWarning(messageToLog);
                 break;
+
             case LogType.Info:
-                if (ex != null)
-                    Log.Information(ex, logTemplate, message, parameters);
-                else
-                    Log.Information(logTemplate, message, parameters);
+                if (ex != null) logger.LogInformation(ex, messageToLog);
+                else logger.LogInformation(messageToLog);
                 break;
+
             case LogType.Debug:
-                if (ex != null)
-                    Log.Debug(ex, logTemplate, message, parameters);
-                else
-                    Log.Debug(logTemplate, message, parameters);
+                if (ex != null) logger.LogDebug(ex, messageToLog);
+                else logger.LogDebug(messageToLog);
                 break;
+
             case LogType.Verbose:
-                if (ex != null)
-                    Log.Verbose(ex, logTemplate, message, parameters);
-                else
-                    Log.Verbose(logTemplate, message, parameters);
+                if (ex != null) logger.LogTrace(ex, messageToLog);
+                else logger.LogTrace(messageToLog);
                 break;
+
             case LogType.Fatal:
-                if (ex != null)
-                    Log.Fatal(ex, logTemplate, message, parameters);
-                else
-                    Log.Fatal(logTemplate, message, parameters);
+                if (ex != null) logger.LogCritical(ex, messageToLog);
+                else logger.LogCritical(messageToLog);
                 break;
+
             default:
-                if (ex != null)
-                    Log.Information(ex, logTemplate, message, parameters);
-                else
-                    Log.Information(logTemplate, message, parameters);
+                if (ex != null) logger.LogInformation(ex, messageToLog);
+                else logger.LogInformation(messageToLog);
+                break;
+        }
+    }
+}
+
+public class SerilogLogger<T> : Core.Logger.ILogger<T>
+{
+    private readonly Microsoft.Extensions.Logging.ILogger<T> logger;
+
+    public SerilogLogger(Microsoft.Extensions.Logging.ILogger<T> logger)
+    {
+        this.logger = logger;
+    }
+
+    public IDisposable GenerateCorrelationId(string correlationId = null)
+    {
+        var id = string.IsNullOrEmpty(correlationId) ? Guid.NewGuid().ToString() : correlationId;
+
+        // Microsoft logger’da CorrelationId taşımak için scope kullanılır.
+        return logger.BeginScope(new Dictionary<string, object>
+        {
+            ["CorrelationId"] = id
+        });
+    }
+
+    public void Write(LogType logType, string message)
+    {
+        LogWrite(logType, message, null);
+    }
+
+    public void Write(LogType logType, string message, Exception ex)
+    {
+        LogWrite(logType, message, ex);
+    }
+
+    public void Write(LogType logType, string message, params string[] parameters)
+    {
+        LogWrite(logType, message, null, parameters);
+    }
+
+    public void Write(LogType logType, string message, Exception ex, params string[] parameters)
+    {
+        LogWrite(logType, message, ex, parameters);
+    }
+
+    private void LogWrite(LogType logType, string templateOrMessage, Exception ex = null, params string[] parameters)
+    {
+        string messageToLog;
+
+        if (parameters != null && parameters.Length > 0)
+        {
+            try
+            {
+                messageToLog = string.Format(templateOrMessage, parameters);
+            }
+            catch (FormatException e)
+            {
+                messageToLog = templateOrMessage + " | Parameters: " + string.Join(", ", parameters);
+                logger.LogError(e, "Failed to format log message: {Message}", templateOrMessage);
+
+            }
+        }
+        else
+        {
+            messageToLog = templateOrMessage;
+        }
+
+        switch (logType)
+        {
+            case LogType.Error:
+                if (ex != null) logger.LogError(ex, messageToLog);
+                else logger.LogError(messageToLog);
+                break;
+
+            case LogType.Warning:
+                if (ex != null) logger.LogWarning(ex, messageToLog);
+                else logger.LogWarning(messageToLog);
+                break;
+
+            case LogType.Info:
+                if (ex != null) logger.LogInformation(ex, messageToLog);
+                else logger.LogInformation(messageToLog);
+                break;
+
+            case LogType.Debug:
+                if (ex != null) logger.LogDebug(ex, messageToLog);
+                else logger.LogDebug(messageToLog);
+                break;
+
+            case LogType.Verbose:
+                if (ex != null) logger.LogTrace(ex, messageToLog);
+                else logger.LogTrace(messageToLog);
+                break;
+
+            case LogType.Fatal:
+                if (ex != null) logger.LogCritical(ex, messageToLog);
+                else logger.LogCritical(messageToLog);
+                break;
+
+            default:
+                if (ex != null) logger.LogInformation(ex, messageToLog);
+                else logger.LogInformation(messageToLog);
                 break;
         }
     }
