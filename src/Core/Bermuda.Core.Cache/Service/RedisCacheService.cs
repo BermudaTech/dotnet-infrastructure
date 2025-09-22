@@ -19,14 +19,68 @@ namespace Bermuda.Core.Cache
             _database = _connection.GetDatabase(index);
         }
 
-        public bool CacheContains(string key)
+        public bool CacheContains(string key, int? index = null)
         {
-            return _database.KeyExists(key);
+            var db = index.HasValue ? _connection.GetDatabase(index.Value) : _database;
+            return db.KeyExists(key);
         }
 
-        public T GetByKey<T>(string key)
+        public T GetByKey<T>(string key, int? index = null)
         {
-            var value = _database.StringGet(key);
+            var db = index.HasValue ? _connection.GetDatabase(index.Value) : _database;
+            var value = db.StringGet(key);
+            return ConvertRedisValue<T>(value);
+        }
+
+        public Dictionary<string, T> GetList<T>(string pattern, int? index = null)
+        {
+            var endpoints = _connection.GetEndPoints(true);
+            var server = _connection.GetServer(endpoints[0]);
+            var db = index.HasValue ? _connection.GetDatabase(index.Value) : _database;
+            var keys = server.Keys(db.Database, pattern).ToArray();
+            var values = db.StringGet(keys);
+
+            var result = keys
+                .Select((key, i) => new { key, value = values[i] })
+                .ToDictionary(kv => kv.key.ToString(), kv => ConvertRedisValue<T>(kv.value));
+            return result;
+        }
+
+        public void Set<T>(string key, T data, DateTime expiryDate, int? index = null)
+        {
+            var db = index.HasValue ? _connection.GetDatabase(index.Value) : _database;
+            var expiry = expiryDate - DateTime.UtcNow;
+            if (typeof(T).IsValueType || typeof(T) == typeof(string)) db.StringSet(key, data.ToString(), expiry);
+            else
+            {
+                var jsonValue = JsonSerializer.Serialize(data);
+                db.StringSet(key, jsonValue, expiry);
+            }
+        }
+
+        public void Remove(string key, int? index = null)
+        {
+            var db = index.HasValue ? _connection.GetDatabase(index.Value) : _database;
+            db.KeyDelete(key);
+        }
+
+        public void RemoveAll(int? index = null)
+        {
+            var endpoints = _connection.GetEndPoints(true);
+            foreach (var endpoint in endpoints)
+            {
+                var server = _connection.GetServer(endpoint);
+                var db = index.HasValue ? _connection.GetDatabase(index.Value) : _database;
+                foreach (var key in server.Keys(db.Database))
+                {
+                    db.KeyDelete(key);
+                }
+            }
+        }
+
+        #region [[ Private ]]
+        public T ConvertRedisValue<T>(RedisValue value)
+        {
             if (value.IsNullOrEmpty) return default;
 
             if (typeof(T).IsValueType || typeof(T) == typeof(string))
@@ -34,37 +88,9 @@ namespace Bermuda.Core.Cache
                 if (typeof(T).IsEnum) return (T)Enum.Parse(typeof(T), value, true);
                 return (T)Convert.ChangeType(value.ToString(), typeof(T));
             }
-                
+
             return JsonSerializer.Deserialize<T>(value);
         }
-
-        public void Set<T>(string key, T data, DateTime expiryDate)
-        {
-            var expiry = expiryDate - DateTime.UtcNow;
-            if (typeof(T).IsValueType || typeof(T) == typeof(string)) _database.StringSet(key, data.ToString(), expiry);
-            else
-            {
-                var jsonValue = JsonSerializer.Serialize(data);
-                _database.StringSet(key, jsonValue, expiry);
-            }
-        }
-
-        public void Remove(string key)
-        {
-            _database.KeyDelete(key);
-        }
-
-        public void RemoveAll()
-        {
-            var endpoints = _connection.GetEndPoints(true);
-            foreach (var endpoint in endpoints)
-            {
-                var server = _connection.GetServer(endpoint);
-                foreach (var key in server.Keys(_database.Database))
-                {
-                    _database.KeyDelete(key);
-                }
-            }
-        }
+        #endregion
     }
 }
