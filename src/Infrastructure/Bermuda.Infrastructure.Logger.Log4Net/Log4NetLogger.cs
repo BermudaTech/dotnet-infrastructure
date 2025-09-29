@@ -51,7 +51,7 @@ namespace Bermuda.Infrastructure.Logger
         public void Write(
             LogType logType,
             string message,
-            params string[] parameters)
+            params object[] parameters)
         {
             LogWrite(logType, message, null, parameters);
         }
@@ -60,7 +60,7 @@ namespace Bermuda.Infrastructure.Logger
             LogType logType,
             string message,
             Exception ex,
-            params string[] parameters)
+            params object[] parameters)
         {
             LogWrite(logType, message, ex, parameters);
         }
@@ -69,7 +69,7 @@ namespace Bermuda.Infrastructure.Logger
             LogType logType,
             string message,
             Exception ex,
-            params string[] parameters)
+            params object[] parameters)
         {
             string logMessage = String.Empty;
 

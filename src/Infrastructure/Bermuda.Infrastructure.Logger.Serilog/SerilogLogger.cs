@@ -33,73 +33,54 @@ public class SerilogLogger : Core.Logger.ILogger
         LogWrite(logType, message, ex);
     }
 
-    public void Write(LogType logType, string message, params string[] parameters)
+    public void Write(LogType logType, string message, params object[] parameters)
     {
         LogWrite(logType, message, null, parameters);
     }
 
-    public void Write(LogType logType, string message, Exception ex, params string[] parameters)
+    public void Write(LogType logType, string message, Exception ex, params object[] parameters)
     {
         LogWrite(logType, message, ex, parameters);
     }
 
-    private void LogWrite(LogType logType, string templateOrMessage, Exception ex = null, params string[] parameters)
+    private void LogWrite(LogType logType, string message, Exception ex = null, params object[] parameters)
     {
-        string messageToLog;
-
-        if (parameters != null && parameters.Length > 0)
-        {
-            try
-            {
-                messageToLog = string.Format(templateOrMessage, parameters);
-            }
-            catch (FormatException e)
-            {
-                messageToLog = templateOrMessage + " | Parameters: " + string.Join(", ", parameters);
-                logger.LogError(e, "Failed to format log message: {Message}", templateOrMessage);
-
-            }
-        }
-        else
-        {
-            messageToLog = templateOrMessage;
-        }
 
         switch (logType)
         {
             case LogType.Error:
-                if (ex != null) logger.LogError(ex, messageToLog);
-                else logger.LogError(messageToLog);
+                if (ex != null) logger.LogError(ex, message, parameters);
+                else logger.LogError(message, parameters);
                 break;
 
             case LogType.Warning:
-                if (ex != null) logger.LogWarning(ex, messageToLog);
-                else logger.LogWarning(messageToLog);
+                if (ex != null) logger.LogWarning(ex, message, parameters);
+                else logger.LogWarning(message, parameters);
                 break;
 
             case LogType.Info:
-                if (ex != null) logger.LogInformation(ex, messageToLog);
-                else logger.LogInformation(messageToLog);
+                if (ex != null) logger.LogInformation(ex, message, parameters);
+                else logger.LogInformation(message, parameters);
                 break;
 
             case LogType.Debug:
-                if (ex != null) logger.LogDebug(ex, messageToLog);
-                else logger.LogDebug(messageToLog);
+                if (ex != null) logger.LogDebug(ex, message, parameters);
+                else logger.LogDebug(message, parameters);
                 break;
 
             case LogType.Verbose:
-                if (ex != null) logger.LogTrace(ex, messageToLog);
-                else logger.LogTrace(messageToLog);
+                if (ex != null) logger.LogTrace(ex, message, parameters);
+                else logger.LogTrace(message, parameters);
                 break;
 
             case LogType.Fatal:
-                if (ex != null) logger.LogCritical(ex, messageToLog);
-                else logger.LogCritical(messageToLog);
+                if (ex != null) logger.LogCritical(ex, message, parameters);
+                else logger.LogCritical(message, parameters);
                 break;
 
             default:
-                if (ex != null) logger.LogInformation(ex, messageToLog);
-                else logger.LogInformation(messageToLog);
+                if (ex != null) logger.LogInformation(ex, message, parameters);
+                else logger.LogInformation(message, parameters);
                 break;
         }
     }
@@ -135,73 +116,53 @@ public class SerilogLogger<T> : Core.Logger.ILogger<T>
         LogWrite(logType, message, ex);
     }
 
-    public void Write(LogType logType, string message, params string[] parameters)
+    public void Write(LogType logType, string message, params object[] parameters)
     {
         LogWrite(logType, message, null, parameters);
     }
 
-    public void Write(LogType logType, string message, Exception ex, params string[] parameters)
+    public void Write(LogType logType, string message, Exception ex, params object[] parameters)
     {
         LogWrite(logType, message, ex, parameters);
     }
 
-    private void LogWrite(LogType logType, string templateOrMessage, Exception ex = null, params string[] parameters)
+    private void LogWrite(LogType logType, string message, Exception ex = null, params object[] parameters)
     {
-        string messageToLog;
-
-        if (parameters != null && parameters.Length > 0)
-        {
-            try
-            {
-                messageToLog = string.Format(templateOrMessage, parameters);
-            }
-            catch (FormatException e)
-            {
-                messageToLog = templateOrMessage + " | Parameters: " + string.Join(", ", parameters);
-                logger.LogError(e, "Failed to format log message: {Message}", templateOrMessage);
-
-            }
-        }
-        else
-        {
-            messageToLog = templateOrMessage;
-        }
-
         switch (logType)
         {
             case LogType.Error:
-                if (ex != null) logger.LogError(ex, messageToLog);
-                else logger.LogError(messageToLog);
+                if (ex != null) logger.LogError(ex, message, parameters);
+                else logger.LogError(message, parameters);
                 break;
 
             case LogType.Warning:
-                if (ex != null) logger.LogWarning(ex, messageToLog);
-                else logger.LogWarning(messageToLog);
+                if (ex != null) logger.LogWarning(ex, message, parameters);
+                else logger.LogWarning(message, parameters);
                 break;
 
             case LogType.Info:
-                if (ex != null) logger.LogInformation(ex, messageToLog);
-                else logger.LogInformation(messageToLog);
+                if (ex != null) logger.LogInformation(ex, message, parameters);
+                else logger.LogInformation(message, parameters);
                 break;
 
             case LogType.Debug:
-                if (ex != null) logger.LogDebug(ex, messageToLog);
-                else logger.LogDebug(messageToLog);
+                if (ex != null) logger.LogDebug(ex, message, parameters);
+                else logger.LogDebug(message, parameters);
                 break;
 
             case LogType.Verbose:
-                if (ex != null) logger.LogTrace(ex, messageToLog);
-                else logger.LogTrace(messageToLog);
+                if (ex != null) logger.LogTrace(ex, message, parameters);
+                else logger.LogTrace(message, parameters);
                 break;
 
             case LogType.Fatal:
-                if (ex != null) logger.LogCritical(ex, messageToLog);
-                else logger.LogCritical(messageToLog);
+                if (ex != null) logger.LogCritical(ex, message, parameters);
+                else logger.LogCritical(message, parameters);
                 break;
 
             default:
-                if (ex != null) logger.LogInformation(ex, messageToLog);
-                else logger.LogInformation(messageToLog);
+                if (ex != null) logger.LogInformation(ex, message, parameters);
+                else logger.LogInformation(message, parameters);
                 break;
         }
     }
