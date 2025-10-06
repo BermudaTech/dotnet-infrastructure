@@ -1,5 +1,5 @@
-﻿using Bermuda.Core.Database.Extensions;
-using Bermuda.Core.Database.Entity;
+﻿using Bermuda.Core.Database.Entity;
+using Bermuda.Core.Database.Extensions;
 using Bermuda.Core.Repository.Enum;
 using Bermuda.Core.Repository.Repository;
 using Bermuda.Core.Repository.UnitOfWork;
@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bermuda.Infrastructure.Database.Repository
@@ -23,34 +24,34 @@ namespace Bermuda.Infrastructure.Database.Repository
             this.unitOfWorkFactory = unitOfWorkFactory;
         }
 
-        public async Task<TEntity> GetAsync(IUnitOfWork unitOfWork, Expression<Func<TEntity, bool>> predicate)
+        public async Task<TEntity> GetAsync(IUnitOfWork unitOfWork, Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             var dbSet = context.Set<TEntity>();
 
-            return await dbSet.Where(predicate).FirstOrDefaultAsync();
+            return await dbSet.Where(predicate).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<TEntity> GetByIdAsync(IUnitOfWork unitOfWork, PKey Id)
+        public async Task<TEntity> GetByIdAsync(IUnitOfWork unitOfWork, PKey Id, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             var dbSet = context.Set<TEntity>();
 
-            return await dbSet.Where(x => x.Id.Equals(Id)).FirstOrDefaultAsync();
+            return await dbSet.Where(x => x.Id.Equals(Id)).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<TEntity>> GetListAsync(IUnitOfWork unitOfWork, Expression<Func<TEntity, bool>> predicate)
+        public async Task<IEnumerable<TEntity>> GetListAsync(IUnitOfWork unitOfWork, Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             var dbSet = context.Set<TEntity>();
 
-            return await dbSet.Where(predicate).ToListAsync();
+            return await dbSet.Where(predicate).ToListAsync(cancellationToken);
         }
 
-        public async Task<PagingResponse<TModel>> GetPageAsync<TModel>(IUnitOfWork unitOfWork, IQueryable<TModel> query, PagingRequest request) where TModel : class
+        public async Task<PagingResponse<TModel>> GetPageAsync<TModel>(IUnitOfWork unitOfWork, IQueryable<TModel> query, PagingRequest request, CancellationToken cancellationToken = default) where TModel : class
         {
             PagingResponse<TModel> response = new PagingResponse<TModel>();
 
@@ -83,70 +84,70 @@ namespace Bermuda.Infrastructure.Database.Repository
 
             response.Result = await source.ToOrderBy<TModel>(request.OrderBy, request.OrderType.Value)
                                           .Skip<TModel>(request.Skip.Value)
-                                          .Take<TModel>(request.Take.Value).ToListAsync();
+                                          .Take<TModel>(request.Take.Value).ToListAsync(cancellationToken);
 
             return response;
         }
 
-        public async Task InsertAsync(IUnitOfWork unitOfWork, TEntity entity)
+        public async Task InsertAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             var dbSet = context.Set<TEntity>();
 
-            await dbSet.AddAsync(entity);
+            await dbSet.AddAsync(entity,cancellationToken);
 
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task BulkInsertAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities)
+        public async Task BulkInsertAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             var dbSet = context.Set<TEntity>();
 
-            await dbSet.AddRangeAsync(entities);
+            await dbSet.AddRangeAsync(entities, cancellationToken);
 
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task UpdateAsync(IUnitOfWork unitOfWork, TEntity entity)
+        public async Task UpdateAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             context.Entry(entity).State = EntityState.Modified;
 
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task BulkUpdateAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities)
+        public async Task BulkUpdateAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
-            context.UpdateRange(entities);
+            context.UpdateRange(entities, cancellationToken);
 
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteAsync(IUnitOfWork unitOfWork, TEntity entity)
+        public async Task DeleteAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             context.Entry(entity).State = EntityState.Deleted;
 
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task BulkDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities)
+        public async Task BulkDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
-            context.RemoveRange(entities);
+            context.RemoveRange(entities, cancellationToken);
 
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task SoftDeleteAsync(IUnitOfWork unitOfWork, TEntity entity)
+        public async Task SoftDeleteAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
@@ -155,10 +156,10 @@ namespace Bermuda.Infrastructure.Database.Repository
 
             context.Entry(entity).State = EntityState.Modified;
 
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task BulkSoftDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities)
+        public async Task BulkSoftDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
@@ -168,9 +169,9 @@ namespace Bermuda.Infrastructure.Database.Repository
                 entityBase.StatusType = StatusType.Deleted;
             });
 
-            context.UpdateRange(entities);
+            context.UpdateRange(entities, cancellationToken);
 
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
 }
