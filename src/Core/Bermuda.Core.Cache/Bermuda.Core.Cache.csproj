@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -15,4 +14,15 @@
 		<Exec Command="xcopy &quot;$(TargetDir)*.dll*&quot; &quot;$(SolutionDir)\..\lib&quot; /y /e" />
 	</Target>
 
+	<Target Name="CopyAfterBuild" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+		<ItemGroup>
+			<OutputFiles Include="$(TargetPath)" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<LeadDistribution>$(SolutionDir)..\..\lead-distribution\lib</LeadDistribution>
+		</PropertyGroup>
+		<MakeDir Directories="$(LeadDistribution)" />
+		<Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(LeadDistribution)" SkipUnchangedFiles="false" />
+	</Target>
 </Project>
