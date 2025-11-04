@@ -7,6 +7,6 @@
         Dictionary<string, T> GetList<T>(string pattern, int? index = null);
         void Set<T>(string key, T data, DateTime expiryDate, int? index = null);
         void Remove(string key, int? index = null);
-        void RemoveAll(int? index = null);
+        void RemoveAll(string pattern = "*", int? index = null);
     }
 }

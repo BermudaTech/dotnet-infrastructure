@@ -20,9 +20,21 @@
 		</ItemGroup>
 
 		<PropertyGroup>
+			<BermudaRater>$(SolutionDir)..\..\rating-api\lib</BermudaRater>
+		</PropertyGroup>
+		<MakeDir Directories="$(BermudaRater)" />
+		<Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(BermudaRater)" SkipUnchangedFiles="false" />
+
+		<PropertyGroup>
 			<LeadDistribution>$(SolutionDir)..\..\lead-distribution\lib</LeadDistribution>
 		</PropertyGroup>
 		<MakeDir Directories="$(LeadDistribution)" />
 		<Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(LeadDistribution)" SkipUnchangedFiles="false" />
+
+		<PropertyGroup>
+			<NotificationQueueService>$(SolutionDir)..\..\notificationqueueservice\lib</NotificationQueueService>
+		</PropertyGroup>
+		<MakeDir Directories="$(NotificationQueueService)" />
+		<Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(NotificationQueueService)" SkipUnchangedFiles="false" />
 	</Target>
 </Project>
