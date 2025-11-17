@@ -124,7 +124,7 @@ namespace Bermuda.Infrastructure.Database.Repository
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
-            context.UpdateRange(entities, cancellationToken);
+            context.UpdateRange(entities);
 
             await context.SaveChangesAsync(cancellationToken);
         }
@@ -142,7 +142,7 @@ namespace Bermuda.Infrastructure.Database.Repository
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
-            context.RemoveRange(entities, cancellationToken);
+            context.RemoveRange(entities);
 
             await context.SaveChangesAsync(cancellationToken);
         }
@@ -169,7 +169,7 @@ namespace Bermuda.Infrastructure.Database.Repository
                 entityBase.StatusType = StatusType.Deleted;
             });
 
-            context.UpdateRange(entities, cancellationToken);
+            context.UpdateRange(entities);
 
             await context.SaveChangesAsync(cancellationToken);
         }
