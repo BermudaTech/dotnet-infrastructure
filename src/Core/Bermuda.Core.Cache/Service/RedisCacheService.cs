@@ -64,17 +64,15 @@ namespace Bermuda.Core.Cache
             db.KeyDelete(key);
         }
 
-        public void RemoveAll(int? index = null)
+        public void RemoveAll(string pattern = "*", int? index = null)
         {
-            var endpoints = _connection.GetEndPoints(true);
+            var endpoints = _connection?.GetEndPoints(true);
             foreach (var endpoint in endpoints)
             {
-                var server = _connection.GetServer(endpoint);
-                var db = index.HasValue ? _connection.GetDatabase(index.Value) : _database;
-                foreach (var key in server.Keys(db.Database))
-                {
-                    db.KeyDelete(key);
-                }
+                var server = _connection?.GetServer(endpoint);
+                var db = index.HasValue ? _connection?.GetDatabase(index.Value) : _database;
+                var keys = server?.Keys(db.Database, pattern)?.ToArray();
+                db?.KeyDelete(keys);
             }
         }
 

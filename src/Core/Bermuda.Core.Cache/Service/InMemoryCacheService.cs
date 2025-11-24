@@ -51,7 +51,7 @@ namespace Bermuda.Core.Cache
             _keys.Remove(key);
         }
 
-        public void RemoveAll(int? index = null)
+        public void RemoveAll(string pattern = "*", int? index = null)
         {
             _memoryCache.Dispose();
             _memoryCache = new MemoryCache(new MemoryCacheOptions());
