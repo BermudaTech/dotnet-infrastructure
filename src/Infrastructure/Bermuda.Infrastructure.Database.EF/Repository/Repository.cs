@@ -96,8 +96,6 @@ namespace Bermuda.Infrastructure.Database.Repository
             var dbSet = context.Set<TEntity>();
 
             await dbSet.AddAsync(entity,cancellationToken);
-
-            await context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task BulkInsertAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
@@ -107,47 +105,45 @@ namespace Bermuda.Infrastructure.Database.Repository
             var dbSet = context.Set<TEntity>();
 
             await dbSet.AddRangeAsync(entities, cancellationToken);
-
-            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task UpdateAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
+        public Task UpdateAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             context.Entry(entity).State = EntityState.Modified;
 
-            await context.SaveChangesAsync(cancellationToken);
+            return Task.CompletedTask;
         }
 
-        public async Task BulkUpdateAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        public Task BulkUpdateAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             context.UpdateRange(entities);
 
-            await context.SaveChangesAsync(cancellationToken);
+            return Task.CompletedTask;
         }
 
-        public async Task DeleteAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
+        public Task DeleteAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             context.Entry(entity).State = EntityState.Deleted;
 
-            await context.SaveChangesAsync(cancellationToken);
+            return Task.CompletedTask;
         }
 
-        public async Task BulkDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        public Task BulkDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             context.RemoveRange(entities);
 
-            await context.SaveChangesAsync(cancellationToken);
+            return Task.CompletedTask;
         }
 
-        public async Task SoftDeleteAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
+        public Task SoftDeleteAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
@@ -156,10 +152,10 @@ namespace Bermuda.Infrastructure.Database.Repository
 
             context.Entry(entity).State = EntityState.Modified;
 
-            await context.SaveChangesAsync(cancellationToken);
+            return Task.CompletedTask;
         }
 
-        public async Task BulkSoftDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        public Task BulkSoftDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
@@ -171,7 +167,7 @@ namespace Bermuda.Infrastructure.Database.Repository
 
             context.UpdateRange(entities);
 
-            await context.SaveChangesAsync(cancellationToken);
+            return Task.CompletedTask;
         }
     }
 }
