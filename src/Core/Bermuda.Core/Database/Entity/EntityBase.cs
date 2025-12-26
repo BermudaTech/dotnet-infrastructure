@@ -7,7 +7,14 @@ public abstract class EntityBase<PKey> : IEquatable<EntityBase<PKey>>
 {
     public virtual PKey Id { get; protected set; }
 
-    protected EntityBase() { }
+    protected EntityBase()
+    {
+        // Generate Guid PK if empty (prevents PK collisions from Guid.Empty)
+        if (typeof(PKey) == typeof(Guid) && EqualityComparer<PKey>.Default.Equals(Id, default!))
+        {
+            Id = (PKey)(object)Guid.NewGuid();
+        }
+    }
     protected EntityBase(PKey id) => Id = id;
 
     public bool IsTransient() =>
