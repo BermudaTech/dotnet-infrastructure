@@ -95,7 +95,9 @@ namespace Bermuda.Infrastructure.Database.Repository
 
             var dbSet = context.Set<TEntity>();
 
-            await dbSet.AddAsync(entity,cancellationToken);
+            await dbSet.AddAsync(entity, cancellationToken);
+
+            await context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task BulkInsertAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
@@ -105,9 +107,11 @@ namespace Bermuda.Infrastructure.Database.Repository
             var dbSet = context.Set<TEntity>();
 
             await dbSet.AddRangeAsync(entities, cancellationToken);
+
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task UpdateAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
+        public async Task UpdateAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
@@ -116,28 +120,12 @@ namespace Bermuda.Infrastructure.Database.Repository
                 auditEntity.UpdatedDate ??= DateTime.UtcNow;
             }
 
-            var entry = context.Entry(entity);
+            context.Entry(entity).State = EntityState.Modified;
 
-            // For detached entities, attach ONLY the root entity as Modified
-            // Don't use context.Update() as it marks the entire graph as Modified,
-            // which breaks Added state for new child entities
-            if (entry.State == EntityState.Detached)
-            {
-                context.Attach(entity);
-                entry.State = EntityState.Modified;
-            }
-            // For tracked entities, ensure state is Modified
-            // But only if Unchanged - don't interfere if already Modified/Added
-            else if (entry.State == EntityState.Unchanged)
-            {
-                entry.State = EntityState.Modified;
-            }
-            // If already Modified/Added, let EF's change tracking handle it
-
-            return Task.CompletedTask;
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task BulkUpdateAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        public async Task BulkUpdateAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
@@ -151,28 +139,28 @@ namespace Bermuda.Infrastructure.Database.Repository
 
             context.UpdateRange(entities);
 
-            return Task.CompletedTask;
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task DeleteAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             context.Remove(entity);
 
-            return Task.CompletedTask;
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task BulkDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        public async Task BulkDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
             context.RemoveRange(entities);
 
-            return Task.CompletedTask;
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task SoftDeleteAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
+        public async Task SoftDeleteAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
         {
             if (entity is not EntityBaseAudit<PKey> entityBase)
             {
@@ -184,13 +172,15 @@ namespace Bermuda.Infrastructure.Database.Repository
             entityBase.StatusType = StatusType.Deleted;
             entityBase.UpdatedDate ??= DateTime.UtcNow;
 
-            context.Update(entity);
+            context.Entry(entity).State = EntityState.Modified;
 
-            return Task.CompletedTask;
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task BulkSoftDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        public async Task BulkSoftDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
+            var context = unitOfWork.GetCurrentDbContext<DbContext>();
+
             foreach (var entity in entities)
             {
                 if (entity is not EntityBaseAudit<PKey> entityBase)
@@ -202,10 +192,9 @@ namespace Bermuda.Infrastructure.Database.Repository
                 entityBase.UpdatedDate ??= DateTime.UtcNow;
             }
 
-            var context = unitOfWork.GetCurrentDbContext<DbContext>();
             context.UpdateRange(entities);
 
-            return Task.CompletedTask;
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
 }

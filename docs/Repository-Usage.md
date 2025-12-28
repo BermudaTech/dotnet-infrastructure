@@ -1,48 +1,46 @@
 # Repository Usage Guide
 
-## UpdateAsync - Single Entity Updates
+Each repository method calls `SaveChangesAsync()` internally - changes are persisted immediately.
+
+## Basic CRUD Operations
 
 ```csharp
-// RECOMMENDED: Load -> Modify -> Update (tracked entity)
+// Insert
+var entity = new Product { Name = "New Product" };
+await repository.InsertAsync(unitOfWork, entity);  // Saved immediately
+
+// Update (load -> modify -> save)
 var entity = await repository.GetByIdAsync(unitOfWork, id);
 entity.Name = "Updated Name";
-entity.Price = 99.99m;
-await repository.UpdateAsync(unitOfWork, entity);
-await unitOfWork.Commit();
+await repository.UpdateAsync(unitOfWork, entity);  // Saved immediately
+
+// Delete
+var entity = await repository.GetByIdAsync(unitOfWork, id);
+await repository.DeleteAsync(unitOfWork, entity);  // Saved immediately
 ```
 
-**Behavior:** Only the root entity is marked as Modified. Child entity states are preserved.
-
-```csharp
-// CAUTION: Detached entity (e.g., from API DTO)
-var entity = new Product
-{
-    Id = existingId,           // Must have valid ID
-    Name = "Updated Name",     // Set ALL properties you want to keep
-    Price = 99.99m,
-    CategoryId = 1             // Unset properties become null/default!
-};
-await repository.UpdateAsync(unitOfWork, entity);
-```
-
-**Warning:** Detached entities update ALL properties. Unset properties will be overwritten with null/default values.
+No need to call `unitOfWork.Commit()` for simple operations.
 
 ---
 
-## BulkUpdateAsync - Multiple Entity Updates
+## Grouping Multiple Operations (Optional)
+
+Use `Begin()`/`Commit()` only when you need atomic transactions:
 
 ```csharp
-// RECOMMENDED: Load -> Modify -> Bulk Update
-var entities = await repository.GetListAsync(unitOfWork, x => x.CategoryId == 5);
-foreach (var entity in entities)
+unitOfWork.Begin();
+try
 {
-    entity.IsActive = false;
+    await repository.InsertAsync(unitOfWork, entity1);
+    await repository.InsertAsync(unitOfWork, entity2);
+    unitOfWork.Commit();  // Both succeed or both fail
 }
-await repository.BulkUpdateAsync(unitOfWork, entities);
-await unitOfWork.Commit();
+catch
+{
+    // Transaction auto-rolls back on exception
+    throw;
+}
 ```
-
-**Behavior:** Marks the entire entity graph as Modified (including child entities).
 
 ---
 
@@ -52,7 +50,6 @@ await unitOfWork.Commit();
 // Requires EntityBaseAudit<TKey> - throws if not
 var entity = await repository.GetByIdAsync(unitOfWork, id);
 await repository.SoftDeleteAsync(unitOfWork, entity);  // Sets StatusType = Deleted
-await unitOfWork.Commit();
 ```
 
 **Note:** Throws `InvalidOperationException` if entity doesn't inherit from `EntityBaseAudit<TKey>`.
@@ -61,12 +58,12 @@ await unitOfWork.Commit();
 
 ## Concurrency Handling
 
-Concurrency exceptions are thrown at `Commit()` time:
+If using concurrency tokens (e.g., PostgreSQL xmin), exceptions are thrown immediately:
 
 ```csharp
 try
 {
-    await unitOfWork.Commit();
+    await repository.UpdateAsync(unitOfWork, entity);
 }
 catch (DbUpdateConcurrencyException ex)
 {
@@ -76,11 +73,22 @@ catch (DbUpdateConcurrencyException ex)
 
 ---
 
+## Auto-Set Fields
+
+- `UpdatedDate` is auto-set to `DateTime.UtcNow` if null (for `EntityBaseAudit` entities)
+- Applies to: `UpdateAsync`, `BulkUpdateAsync`, `SoftDeleteAsync`, `BulkSoftDeleteAsync`
+
+---
+
 ## Quick Reference
 
-| Method | Use Case | Child Entities |
-|--------|----------|----------------|
-| `UpdateAsync` | Single tracked entity | Preserved |
-| `BulkUpdateAsync` | Multiple entities | Marked Modified |
-| `DeleteAsync` | Hard delete | N/A |
-| `SoftDeleteAsync` | Soft delete (audit) | Marked Modified |
+| Method | Saves Immediately | Notes |
+|--------|-------------------|-------|
+| `InsertAsync` | Yes | |
+| `BulkInsertAsync` | Yes | |
+| `UpdateAsync` | Yes | Auto-sets UpdatedDate |
+| `BulkUpdateAsync` | Yes | Auto-sets UpdatedDate |
+| `DeleteAsync` | Yes | Hard delete |
+| `BulkDeleteAsync` | Yes | Hard delete |
+| `SoftDeleteAsync` | Yes | Requires EntityBaseAudit |
+| `BulkSoftDeleteAsync` | Yes | Requires EntityBaseAudit |
