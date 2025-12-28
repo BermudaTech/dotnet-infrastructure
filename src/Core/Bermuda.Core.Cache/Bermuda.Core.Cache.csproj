@@ -11,7 +11,7 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="xcopy &quot;$(TargetDir)*.dll*&quot; &quot;$(SolutionDir)\..\lib&quot; /y /e" />
+		<Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="$(SolutionDir)/../lib" SkipUnchangedFiles="true" />
 	</Target>
 
 	<Target Name="CopyAfterBuild" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">

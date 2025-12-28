@@ -1,4 +1,4 @@
-﻿using Bermuda.Core.Database.Entity;
+using Bermuda.Core.Database.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

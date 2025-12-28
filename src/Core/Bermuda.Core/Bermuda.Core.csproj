@@ -10,7 +10,8 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)*.dll*&quot; &quot;$(SolutionDir)\..\lib&quot; /y /e" />
+    <Copy SourceFiles="@(IntermediateAssembly)" DestinationFolder="$(SolutionDir)/../lib" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="$(SolutionDir)/../lib" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>

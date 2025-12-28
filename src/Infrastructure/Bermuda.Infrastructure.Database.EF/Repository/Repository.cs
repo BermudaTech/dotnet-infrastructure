@@ -95,7 +95,7 @@ namespace Bermuda.Infrastructure.Database.Repository
 
             var dbSet = context.Set<TEntity>();
 
-            await dbSet.AddAsync(entity,cancellationToken);
+            await dbSet.AddAsync(entity, cancellationToken);
 
             await context.SaveChangesAsync(cancellationToken);
         }
@@ -115,6 +115,11 @@ namespace Bermuda.Infrastructure.Database.Repository
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
+            if (entity is EntityBaseAudit<PKey> auditEntity)
+            {
+                auditEntity.UpdatedDate ??= DateTime.UtcNow;
+            }
+
             context.Entry(entity).State = EntityState.Modified;
 
             await context.SaveChangesAsync(cancellationToken);
@@ -123,6 +128,14 @@ namespace Bermuda.Infrastructure.Database.Repository
         public async Task BulkUpdateAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
+
+            foreach (var entity in entities)
+            {
+                if (entity is EntityBaseAudit<PKey> auditEntity)
+                {
+                    auditEntity.UpdatedDate ??= DateTime.UtcNow;
+                }
+            }
 
             context.UpdateRange(entities);
 
@@ -133,7 +146,7 @@ namespace Bermuda.Infrastructure.Database.Repository
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
-            context.Entry(entity).State = EntityState.Deleted;
+            context.Remove(entity);
 
             await context.SaveChangesAsync(cancellationToken);
         }
@@ -149,10 +162,15 @@ namespace Bermuda.Infrastructure.Database.Repository
 
         public async Task SoftDeleteAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
         {
+            if (entity is not EntityBaseAudit<PKey> entityBase)
+            {
+                throw new InvalidOperationException($"SoftDeleteAsync requires entity of type EntityBaseAudit<{typeof(PKey).Name}>. Actual type: {entity.GetType().Name}");
+            }
+
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
-            EntityBaseAudit<PKey> entityBase = entity as EntityBaseAudit<PKey>;
             entityBase.StatusType = StatusType.Deleted;
+            entityBase.UpdatedDate ??= DateTime.UtcNow;
 
             context.Entry(entity).State = EntityState.Modified;
 
@@ -163,11 +181,16 @@ namespace Bermuda.Infrastructure.Database.Repository
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
-            Parallel.ForEach(entities, entity =>
+            foreach (var entity in entities)
             {
-                EntityBaseAudit<PKey> entityBase = entity as EntityBaseAudit<PKey>;
+                if (entity is not EntityBaseAudit<PKey> entityBase)
+                {
+                    throw new InvalidOperationException($"BulkSoftDeleteAsync requires entities of type EntityBaseAudit<{typeof(PKey).Name}>. Actual type: {entity.GetType().Name}");
+                }
+
                 entityBase.StatusType = StatusType.Deleted;
-            });
+                entityBase.UpdatedDate ??= DateTime.UtcNow;
+            }
 
             context.UpdateRange(entities);
 
