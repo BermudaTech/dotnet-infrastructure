@@ -111,7 +111,28 @@ namespace Bermuda.Infrastructure.Database.Repository
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
-            context.Entry(entity).State = EntityState.Modified;
+            if (entity is EntityBaseAudit<PKey> auditEntity)
+            {
+                auditEntity.UpdatedDate ??= DateTime.UtcNow;
+            }
+
+            var entry = context.Entry(entity);
+
+            // For detached entities, attach ONLY the root entity as Modified
+            // Don't use context.Update() as it marks the entire graph as Modified,
+            // which breaks Added state for new child entities
+            if (entry.State == EntityState.Detached)
+            {
+                context.Attach(entity);
+                entry.State = EntityState.Modified;
+            }
+            // For tracked entities, ensure state is Modified
+            // But only if Unchanged - don't interfere if already Modified/Added
+            else if (entry.State == EntityState.Unchanged)
+            {
+                entry.State = EntityState.Modified;
+            }
+            // If already Modified/Added, let EF's change tracking handle it
 
             return Task.CompletedTask;
         }
@@ -119,6 +140,14 @@ namespace Bermuda.Infrastructure.Database.Repository
         public Task BulkUpdateAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
+
+            foreach (var entity in entities)
+            {
+                if (entity is EntityBaseAudit<PKey> auditEntity)
+                {
+                    auditEntity.UpdatedDate ??= DateTime.UtcNow;
+                }
+            }
 
             context.UpdateRange(entities);
 
@@ -129,7 +158,7 @@ namespace Bermuda.Infrastructure.Database.Repository
         {
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
-            context.Entry(entity).State = EntityState.Deleted;
+            context.Remove(entity);
 
             return Task.CompletedTask;
         }
@@ -145,26 +174,35 @@ namespace Bermuda.Infrastructure.Database.Repository
 
         public Task SoftDeleteAsync(IUnitOfWork unitOfWork, TEntity entity, CancellationToken cancellationToken = default)
         {
+            if (entity is not EntityBaseAudit<PKey> entityBase)
+            {
+                throw new InvalidOperationException($"SoftDeleteAsync requires entity of type EntityBaseAudit<{typeof(PKey).Name}>. Actual type: {entity.GetType().Name}");
+            }
+
             var context = unitOfWork.GetCurrentDbContext<DbContext>();
 
-            EntityBaseAudit<PKey> entityBase = entity as EntityBaseAudit<PKey>;
             entityBase.StatusType = StatusType.Deleted;
+            entityBase.UpdatedDate ??= DateTime.UtcNow;
 
-            context.Entry(entity).State = EntityState.Modified;
+            context.Update(entity);
 
             return Task.CompletedTask;
         }
 
         public Task BulkSoftDeleteAsync(IUnitOfWork unitOfWork, IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
-            var context = unitOfWork.GetCurrentDbContext<DbContext>();
-
-            Parallel.ForEach(entities, entity =>
+            foreach (var entity in entities)
             {
-                EntityBaseAudit<PKey> entityBase = entity as EntityBaseAudit<PKey>;
-                entityBase.StatusType = StatusType.Deleted;
-            });
+                if (entity is not EntityBaseAudit<PKey> entityBase)
+                {
+                    throw new InvalidOperationException($"BulkSoftDeleteAsync requires entities of type EntityBaseAudit<{typeof(PKey).Name}>. Actual type: {entity.GetType().Name}");
+                }
 
+                entityBase.StatusType = StatusType.Deleted;
+                entityBase.UpdatedDate ??= DateTime.UtcNow;
+            }
+
+            var context = unitOfWork.GetCurrentDbContext<DbContext>();
             context.UpdateRange(entities);
 
             return Task.CompletedTask;

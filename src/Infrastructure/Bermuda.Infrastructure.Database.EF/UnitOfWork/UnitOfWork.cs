@@ -41,14 +41,22 @@ namespace Bermuda.Infrastructure.Database.UnitOfWork
 
         public void Commit()
         {
-            if (dbContext != null)
+            try
             {
-                dbContext.SaveChanges();
-                dbContextTransaction?.Commit();
+                if (dbContext != null)
+                {
+                    dbContext.SaveChanges();
+                    dbContextTransaction?.Commit();
+                }
+                else
+                {
+                    GetDbContextFromStack<DbContext>(false).SaveChanges();
+                }
             }
-            else
+            catch (DbUpdateConcurrencyException)
             {
-                GetDbContextFromStack<DbContext>(false).SaveChanges();
+                dbContextTransaction?.Rollback();
+                throw;
             }
         }
 
