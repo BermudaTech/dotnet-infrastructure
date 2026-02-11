@@ -47,7 +47,7 @@ public static class Extension
         Environment.SetEnvironmentVariable("NEW_RELIC_LICENSE_KEY", newRelicLicenseKey, EnvironmentVariableTarget.Process);
         Environment.SetEnvironmentVariable("NEW_RELIC_APP_NAME", applicationName, EnvironmentVariableTarget.Process);
 
-        return hostBuilder.UseSerilog();
+        return hostBuilder.UseSerilog(Log.Logger, dispose: true);
     }
 
     private static LogEventLevel ConvertToLogEventLevel(LogLevel logLevel)
