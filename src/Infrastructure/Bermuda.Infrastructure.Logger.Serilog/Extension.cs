@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NewRelic.LogEnrichers.Serilog;
 using Serilog;
@@ -10,6 +11,14 @@ namespace Bermuda.Infrastructure.Logger.Serilog;
 
 public static class Extension
 {
+    public static IServiceCollection AddSerilogLogger(this IServiceCollection services)
+    {
+        services.AddSingleton<Bermuda.Core.Logger.ILogger, SerilogLogger>();
+        services.AddSingleton(typeof(Bermuda.Core.Logger.ILogger<>), typeof(SerilogLogger<>));
+        return services;
+    }
+
+
     public static IHostBuilder UseSerilogWithNewRelic(
     this IHostBuilder hostBuilder,
     string applicationName,
