@@ -67,12 +67,16 @@ namespace Bermuda.Core.Cache
         public void RemoveAll(string pattern = "*", int? index = null)
         {
             var endpoints = _connection?.GetEndPoints(true);
+            if (endpoints is null) return;
             foreach (var endpoint in endpoints)
             {
                 var server = _connection?.GetServer(endpoint);
                 var db = index.HasValue ? _connection?.GetDatabase(index.Value) : _database;
-                var keys = server?.Keys(db.Database, pattern)?.ToArray();
-                db?.KeyDelete(keys);
+                if (server is null || db is null) continue;
+                // Delete one key at a time: a multi-key KeyDelete throws CROSSSLOT on a
+                // Redis cluster (keys hash to different slots). Single-key DEL is slot-safe.
+                foreach (var key in server.Keys(db.Database, pattern))
+                    db.KeyDelete(key);
             }
         }
 
