@@ -34,15 +34,21 @@ namespace Bermuda.Core.Cache
 
         public Dictionary<string, T> GetList<T>(string pattern, int? index = null)
         {
-            var endpoints = _connection.GetEndPoints(true);
-            var server = _connection.GetServer(endpoints[0]);
-            var db = index.HasValue ? _connection.GetDatabase(index.Value) : _database;
-            var keys = server.Keys(db.Database, pattern).ToArray();
-            var values = db.StringGet(keys);
-
-            var result = keys
-                .Select((key, i) => new { key, value = values[i] })
-                .ToDictionary(kv => kv.key.ToString(), kv => ConvertRedisValue<T>(kv.value));
+            var result = new Dictionary<string, T>();
+            var endpoints = _connection?.GetEndPoints(true);
+            if (endpoints is null) return result;
+            var db = index.HasValue ? _connection?.GetDatabase(index.Value) : _database;
+            if (db is null) return result;
+            foreach (var endpoint in endpoints)
+            {
+                var server = _connection?.GetServer(endpoint);
+                if (server is null) continue;
+                // Read one key at a time: a multi-key StringGet (MGET) throws CROSSSLOT on a
+                // Redis cluster (keys hash to different slots). Single-key GET is slot-safe.
+                // Iterate every endpoint so all cluster nodes' slots are covered (mirrors RemoveAll).
+                foreach (var key in server.Keys(db.Database, pattern))
+                    result[key.ToString()] = ConvertRedisValue<T>(db.StringGet(key));
+            }
             return result;
         }
 
@@ -67,12 +73,16 @@ namespace Bermuda.Core.Cache
         public void RemoveAll(string pattern = "*", int? index = null)
         {
             var endpoints = _connection?.GetEndPoints(true);
+            if (endpoints is null) return;
             foreach (var endpoint in endpoints)
             {
                 var server = _connection?.GetServer(endpoint);
                 var db = index.HasValue ? _connection?.GetDatabase(index.Value) : _database;
-                var keys = server?.Keys(db.Database, pattern)?.ToArray();
-                db?.KeyDelete(keys);
+                if (server is null || db is null) continue;
+                // Delete one key at a time: a multi-key KeyDelete throws CROSSSLOT on a
+                // Redis cluster (keys hash to different slots). Single-key DEL is slot-safe.
+                foreach (var key in server.Keys(db.Database, pattern))
+                    db.KeyDelete(key);
             }
         }
 
